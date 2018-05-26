@@ -1,0 +1,2 @@
+CFLAGS=-Wall -Wextra -pedantic
+

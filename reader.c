@@ -2,43 +2,39 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define INSTR_MASK 0xF000
-#define MEM_ADDR_MASK 0x0FFF
-#define REG_1_MASK 0x0F00
-#define REG_2_MASK 0x00F0
-#define TWO_REG_OPTYPE_MASK 0x000F
-#define LOW_BYTE_MASK 0x00FF
-
 #define CLS 0x00E0
 #define RET 0x00EE
+
 #define print(c, name) printf("%x: %s\n", c, name)
+#define REG_1(instr) (instr & 0x0F00) >> 8
+#define REG_2(instr) (instr & 0x00F0) >> 4
+#define LOW_BYTE(instr) instr & 0x00FF
+#define MEM_ADDR(instr) instr & 0x0FFF
+#define LOW_NIBBLE(instr) instr & 0x000F
+#define HIGH_NIBBLE(instr) (instr & 0xF000) >> 12
 
 void print_mem_instr(char *name, uint16_t instr) {
-    uint16_t mem_addr = instr & MEM_ADDR_MASK;
-    printf("%x: %s %x\n", instr, name, mem_addr);
+    printf("%x: %s %x\n", instr, name, MEM_ADDR(instr));
 }
 
 void print_single_reg_instr(char *name, uint16_t instr) {
-    uint16_t reg = (instr & REG_1_MASK) >> 8;
-    printf("%x: %s V%x\n", instr, name, reg);
+    printf("%x: %s V%x\n", instr, name, REG_1(instr));
 }
 
 void print_single_reg_instr_with_operand(char *name, uint16_t instr) {
-    uint16_t reg = (instr & REG_1_MASK) >> 8;
-    uint16_t operand = instr & LOW_BYTE_MASK;
+    uint16_t reg = REG_1(instr);
+    uint16_t operand = LOW_BYTE(instr);
     printf("%x: %s V%x, %x\n", instr, name, reg, operand);
 }
 
 void print_two_reg_instr(char *name, uint16_t instr) {
-    uint16_t reg1 = (instr & REG_1_MASK) >> 8;
-    uint16_t reg2 = (instr & REG_2_MASK) >> 4;
-    printf("%x: %s V%x, V%x\n", instr, name, reg1, reg2);
+    printf("%x: %s V%x, V%x\n", instr, name, REG_1(instr), REG_2(instr));
 }
 
 void print_two_reg_instr_with_operand(char *name, uint16_t instr) {
-    uint16_t reg1 = (instr & REG_1_MASK) >> 8;
-    uint16_t reg2 = (instr & REG_2_MASK) >> 4;
-    uint16_t op = instr & TWO_REG_OPTYPE_MASK;
+    uint16_t reg1 = REG_1(instr);
+    uint16_t reg2 = REG_2(instr);
+    uint16_t op = LOW_NIBBLE(instr);
     printf("%x: %s V%x, V%x, %x\n", instr, name, reg1, reg2, op);
 }
 
@@ -46,13 +42,13 @@ void print_two_reg_op(uint16_t instr) {
     static char *op_names[] = {
         "LD", "OR", "AND", "XOR", "ADD", "SUB", "SHR", "SUBN", "SHL"
     };
-    uint16_t optype = instr & TWO_REG_OPTYPE_MASK;
+    uint16_t optype = LOW_NIBBLE(instr);
     print_two_reg_instr(op_names[optype], instr);
 }
 
 void print_f_instr(uint16_t instr) {
-    uint16_t reg = (instr & REG_1_MASK) >> 8;
-    switch (instr & LOW_BYTE_MASK) {
+    uint16_t reg = REG_1(instr);
+    switch (LOW_BYTE(instr)) {
         case 7:
             printf("%x: LD V%x, DT\n", instr, reg);
             break;
@@ -87,7 +83,8 @@ void print_f_instr(uint16_t instr) {
 }
 
 void print_instruction(uint16_t instr) {
-    switch ((instr & INSTR_MASK) >> 12) {
+    uint16_t instruction_type = HIGH_NIBBLE(instr);
+    switch (instruction_type) {
         case 0:
             if (instr == CLS) {
                 print(CLS, "CLS");
@@ -137,7 +134,7 @@ void print_instruction(uint16_t instr) {
             print_two_reg_instr_with_operand("DRW", instr);
             break;
         case 0xE:
-            switch (instr & LOW_BYTE_MASK) {
+            switch (LOW_BYTE(instr)) {
                 case 0x9E:
                     print_single_reg_instr("SKP", instr);
                     break;

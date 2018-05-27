@@ -33,6 +33,7 @@ int main(int argc, char *argv[]) {
     uint16_t stack[16];
     uint16_t pc = PROG_MEM_START, sp = 0, reg_i;
     uint8_t reg_v[16], reg_dt, reg_st;
+    uint16_t instr;
 
     float sec_since_update = 0;
     int loop_start = clock();
@@ -43,10 +44,13 @@ int main(int argc, char *argv[]) {
 
     while (true) {
         if (sec_since_update >= UPDATE_INTERVAL_SECONDS) {
-            puts("Updating...");
-            // TODO: read instruction
+            printf("Updating, PC = %d..., ram[PC] = %x, ram[PC+1] = %x\n", pc, ram[pc], ram[pc + 1]);
+            instr = (ram[pc] << 8) | ram[pc + 1];
+            printf("Read instruction %x\n", instr);
             // TODO: execute instruction
             // TODO: update timers
+
+            pc = pc + 2;
             sec_since_update = 0;
         }
         temp = clock();

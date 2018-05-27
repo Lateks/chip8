@@ -166,9 +166,9 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    uint16_t instr;
+    uint8_t instr[2];
 
-    while (fread(&instr, sizeof(instr), 1, fp)) {
-        print_instruction(instr);
+    while (fread(&instr, sizeof(uint8_t), 2, fp)) {
+        print_instruction((instr[0] << 8) | instr[1]);
     }
 }

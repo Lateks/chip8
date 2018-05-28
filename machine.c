@@ -37,6 +37,10 @@ void run_ld_reg_vx(struct chip8 *vm, uint16_t instruction) {
     vm->reg_v[reg] = operand;
 }
 
+void run_ld_i_addr(struct chip8 *vm, uint16_t instruction) {
+    vm->reg_i = MEM_ADDR(instruction);
+}
+
 void vm_run(struct chip8 *vm) {
     uint16_t instruction = read_instruction(vm);
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
@@ -44,6 +48,9 @@ void vm_run(struct chip8 *vm) {
     switch (instruction_type) {
         case 6:
             run_ld_reg_vx(vm, instruction);
+            break;
+        case 0xA:
+            run_ld_i_addr(vm, instruction);
             break;
         default:
             printf("Skipping unknown instruction %x\n", instruction);

@@ -1,6 +1,9 @@
 #ifndef MACHINE_H
 #define MACHINE_H
 
+#include <stdlib.h>
+#include <stdint.h>
+
 #define RAM_SIZE 0x1000
 #define PROG_MEM_START 0x200
 

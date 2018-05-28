@@ -3,3 +3,4 @@
 *.o
 chip8
 reader
+test

@@ -79,4 +79,6 @@ void vm_run(struct chip8 *vm) {
     }
 
     vm->pc = vm->pc + 2;
+    if (vm->reg_dt > 0) --vm->reg_dt;
+    if (vm->reg_st > 0) --vm->reg_st;
 }

@@ -1,17 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "instructions.h"
 
 #define CLS 0x00E0
 #define RET 0x00EE
 
 #define print(c, name) printf("%x: %s\n", c, name)
-#define REG_1(instr) (instr & 0x0F00) >> 8
-#define REG_2(instr) (instr & 0x00F0) >> 4
-#define LOW_BYTE(instr) instr & 0x00FF
-#define MEM_ADDR(instr) instr & 0x0FFF
-#define LOW_NIBBLE(instr) instr & 0x000F
-#define HIGH_NIBBLE(instr) (instr & 0xF000) >> 12
 
 void print_mem_instr(char *name, uint16_t instr) {
     printf("%x: %s %x\n", instr, name, MEM_ADDR(instr));

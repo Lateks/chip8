@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "machine.h"
+#include "instructions.h"
 
 /*
  * Reads two-byte instruction stored in big-endian format
@@ -29,10 +30,25 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
     return bytes_read;
 }
 
+void run_ld_reg_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    uint8_t operand = LOW_BYTE(instruction);
+
+    vm->reg_v[reg] = operand;
+}
+
 void vm_run(struct chip8 *vm) {
     uint16_t instruction = read_instruction(vm);
+    uint16_t instruction_type = HIGH_NIBBLE(instruction);
 
-    printf("Read unknown instruction %x\n", instruction);
+    switch (instruction_type) {
+        case 6:
+            run_ld_reg_vx(vm, instruction);
+            break;
+        default:
+            printf("Skipping unknown instruction %x\n", instruction);
+    }
+
 
     vm->pc = vm->pc + 2;
 }

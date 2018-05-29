@@ -3,8 +3,20 @@
 #include "machine.h"
 #include "instructions.h"
 
-void test_ld_reg_vx(CuTest* tc)
-{
+void test_jp_addr(CuTest* tc) {
+    struct chip8 vm;
+
+    run_jp_addr(&vm, 0x12d4);
+    CuAssertIntEquals(tc, 0x2d4, vm.pc);
+
+    run_jp_addr(&vm, 0x1FFF);
+    CuAssertIntEquals(tc, 0xFFF, vm.pc);
+
+    run_jp_addr(&vm, 0x1000);
+    CuAssertIntEquals(tc, 0, vm.pc);
+}
+
+void test_ld_reg_vx(CuTest* tc) {
     struct chip8 vm;
     run_ld_vx_byte(&vm, 0x6A42);
     run_ld_vx_byte(&vm, 0x60F0);
@@ -52,6 +64,7 @@ CuSuite* get_instruction_test_suite(void)
 {
     CuSuite* suite = CuSuiteNew();
 
+    SUITE_ADD_TEST(suite, test_jp_addr);
     SUITE_ADD_TEST(suite, test_ld_reg_vx);
     SUITE_ADD_TEST(suite, test_ld_i_addr);
     SUITE_ADD_TEST(suite, test_ld_vx_vy);

@@ -1,5 +1,9 @@
 #include "instructions.h"
 
+void run_jp_addr(struct chip8 *vm, uint16_t instruction) {
+    vm->pc = MEM_ADDR(instruction);
+}
+
 void run_ld_vx_byte(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     uint8_t operand = LOW_BYTE(instruction);

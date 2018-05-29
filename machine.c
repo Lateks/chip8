@@ -47,6 +47,9 @@ void vm_run(struct chip8 *vm) {
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
 
     switch (instruction_type) {
+        case 1:
+            run_jp_addr(vm, instruction);
+            break;
         case 6:
             run_ld_vx_byte(vm, instruction);
             break;

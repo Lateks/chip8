@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "instructions.h"
+#include "machine.h"
 
 #define CLS 0x00E0
 #define RET 0x00EE
 
-#define print(c, name) printf("%x: %s\n", c, name)
+#define print(c, name) printf("%04x: %s\n", c, name)
 
 void print_mem_instr(char *name, uint16_t instr) {
     printf("%x: %s %x\n", instr, name, MEM_ADDR(instr));
@@ -77,8 +78,10 @@ void print_f_instr(uint16_t instr) {
     }
 }
 
-void print_instruction(uint16_t instr) {
+void print_instruction(uint16_t instr, uint16_t addr) {
     uint16_t instruction_type = HIGH_NIBBLE(instr);
+    printf("(%04x) ", addr);
+
     switch (instruction_type) {
         case 0:
             if (instr == CLS) {
@@ -142,6 +145,7 @@ void print_instruction(uint16_t instr) {
             }
             break;
         case 0xF:
+            print_f_instr(instr);
             break;
         default:
             print(instr, "unknown");
@@ -163,7 +167,9 @@ int main(int argc, char **argv) {
 
     uint8_t instr[2];
 
+    uint16_t addr = PROG_MEM_START;
     while (fread(&instr, sizeof(uint8_t), 2, fp)) {
-        print_instruction((instr[0] << 8) | instr[1]);
+        print_instruction((instr[0] << 8) | instr[1], addr);
+        addr += 2;
     }
 }

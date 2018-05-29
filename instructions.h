@@ -13,6 +13,8 @@
 
 void run_jp_addr(struct chip8 *vm, uint16_t instruction);
 
+void run_call_addr(struct chip8 *vm, uint16_t instruction);
+
 void run_ld_vx_byte(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_i_addr(struct chip8 *vm, uint16_t instruction);

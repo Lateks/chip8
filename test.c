@@ -16,6 +16,28 @@ void test_jp_addr(CuTest* tc) {
     CuAssertIntEquals(tc, 0, vm.pc);
 }
 
+void test_call_addr(CuTest* tc) {
+    struct chip8 vm = {};
+    vm.pc = 0x255;
+
+    run_call_addr(&vm, 0x22d4);
+    CuAssertIntEquals(tc, 0, vm.error);
+    CuAssertIntEquals(tc, 0x2d4, vm.pc);
+    CuAssertIntEquals(tc, 1, vm.sp);
+    CuAssertIntEquals(tc, 0x255, vm.stack[0]);
+}
+
+void test_call_addr_stack_overflow(CuTest* tc) {
+    struct chip8 vm = {};
+    vm.pc = 0x255;
+    vm.sp = STACK_SIZE;
+
+    run_call_addr(&vm, 0x22d4);
+    CuAssertIntEquals(tc, 0x255, vm.pc);
+    CuAssertIntEquals(tc, STACK_SIZE, vm.sp);
+    CuAssertIntEquals(tc, ERROR_STACK_OVERFLOW, vm.error);
+}
+
 void test_ld_reg_vx(CuTest* tc) {
     struct chip8 vm;
     run_ld_vx_byte(&vm, 0x6A42);
@@ -65,6 +87,8 @@ CuSuite* get_instruction_test_suite(void)
     CuSuite* suite = CuSuiteNew();
 
     SUITE_ADD_TEST(suite, test_jp_addr);
+    SUITE_ADD_TEST(suite, test_call_addr);
+    SUITE_ADD_TEST(suite, test_call_addr_stack_overflow);
     SUITE_ADD_TEST(suite, test_ld_reg_vx);
     SUITE_ADD_TEST(suite, test_ld_i_addr);
     SUITE_ADD_TEST(suite, test_ld_vx_vy);

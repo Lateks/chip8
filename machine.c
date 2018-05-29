@@ -26,6 +26,7 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
 
     vm->pc = PROG_MEM_START;
     vm->sp = 0;
+    vm->error = 0;
 
     return bytes_read;
 }
@@ -42,6 +43,18 @@ void run_8xyn(struct chip8 *vm, uint16_t instruction) {
     }
 }
 
+void print_error(struct chip8* vm) {
+    switch (vm->error) {
+        case 0:
+            break;
+        case ERROR_STACK_OVERFLOW:
+            printf("Error: Stack overflow at %04x\n", vm->pc);
+            break;
+        default:
+            printf("Error: Unknown error\n");
+    }
+}
+
 void vm_run(struct chip8 *vm) {
     uint16_t instruction = read_instruction(vm);
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
@@ -49,6 +62,9 @@ void vm_run(struct chip8 *vm) {
     switch (instruction_type) {
         case 1:
             run_jp_addr(vm, instruction);
+            break;
+        case 2:
+            run_call_addr(vm, instruction);
             break;
         case 6:
             run_ld_vx_byte(vm, instruction);
@@ -63,7 +79,12 @@ void vm_run(struct chip8 *vm) {
             printf("Skipping unknown instruction %x\n", instruction);
     }
 
-    vm->pc = vm->pc + 2;
+    if (vm->error) {
+        print_error(vm);
+        exit(vm->error);
+    }
+
+    vm->pc += 2;
     if (vm->reg_dt > 0) --vm->reg_dt;
     if (vm->reg_st > 0) --vm->reg_st;
 }

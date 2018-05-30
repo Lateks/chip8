@@ -108,6 +108,13 @@ void vm_run(struct chip8 *vm) {
         case 8:
             run_8xyn(vm, instruction);
             break;
+        case 9:
+            if (LOW_NIBBLE(instruction) == 0) {
+                run_sne_vx_vy(vm, instruction);
+            } else {
+                printf("Skipping unknown 9nnn instruction\n");
+            }
+            break;
         case 0xA:
             run_ld_i_addr(vm, instruction);
             break;

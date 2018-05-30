@@ -86,6 +86,9 @@ void vm_run(struct chip8 *vm) {
         case 3:
             run_se_vx_byte(vm, instruction);
             break;
+        case 4:
+            run_sne_vx_byte(vm, instruction);
+            break;
         case 6:
             run_ld_vx_byte(vm, instruction);
             break;

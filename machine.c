@@ -45,7 +45,7 @@ void run_8xyn(struct chip8 *vm, uint16_t instruction) {
 
 void print_error(struct chip8* vm) {
     switch (vm->error) {
-        case 0:
+        case NO_ERROR:
             break;
         case ERROR_STACK_OVERFLOW:
             printf("Error: Stack overflow at %04x\n", vm->pc);

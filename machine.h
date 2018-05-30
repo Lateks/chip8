@@ -8,8 +8,11 @@
 #define PROG_MEM_START 0x200
 #define STACK_SIZE 16
 
-#define ERROR_STACK_OVERFLOW 1
-#define ERROR_STACK_UNDERFLOW 2
+enum vm_error {
+    NO_ERROR,
+    ERROR_STACK_OVERFLOW,
+    ERROR_STACK_UNDERFLOW
+};
 
 struct chip8 {
     uint8_t ram[RAM_SIZE];
@@ -20,7 +23,7 @@ struct chip8 {
     uint8_t reg_v[16];
     uint8_t reg_dt;
     uint8_t reg_st;
-    uint8_t error;
+    enum vm_error error;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);

@@ -3,6 +3,25 @@
 #include "machine.h"
 #include "instructions.h"
 
+void test_ret(CuTest* tc) {
+    struct chip8 vm = { .pc = 0x255, .sp = 1 };
+    vm.stack[0] = 0x230;
+
+    run_ret(&vm);
+    CuAssertIntEquals(tc, 0x230, vm.pc);
+    CuAssertIntEquals(tc, 0, vm.sp);
+    CuAssertIntEquals(tc, 0, vm.error);
+}
+
+void test_ret_stack_underflow(CuTest *tc) {
+    struct chip8 vm = { .pc = 0x255, .sp = 0 };
+
+    run_ret(&vm);
+    CuAssertIntEquals(tc, 0x255, vm.pc);
+    CuAssertIntEquals(tc, 0, vm.sp);
+    CuAssertIntEquals(tc, ERROR_STACK_UNDERFLOW, vm.error);
+}
+
 void test_jp_addr(CuTest* tc) {
     struct chip8 vm;
 
@@ -17,8 +36,7 @@ void test_jp_addr(CuTest* tc) {
 }
 
 void test_call_addr(CuTest* tc) {
-    struct chip8 vm = {};
-    vm.pc = 0x255;
+    struct chip8 vm = { .pc = 0x255 };
 
     run_call_addr(&vm, 0x22d4);
     CuAssertIntEquals(tc, 0, vm.error);
@@ -28,9 +46,7 @@ void test_call_addr(CuTest* tc) {
 }
 
 void test_call_addr_stack_overflow(CuTest* tc) {
-    struct chip8 vm = {};
-    vm.pc = 0x255;
-    vm.sp = STACK_SIZE;
+    struct chip8 vm = { .pc = 0x255, .sp = STACK_SIZE };
 
     run_call_addr(&vm, 0x22d4);
     CuAssertIntEquals(tc, 0x255, vm.pc);
@@ -86,6 +102,8 @@ CuSuite* get_instruction_test_suite(void)
 {
     CuSuite* suite = CuSuiteNew();
 
+    SUITE_ADD_TEST(suite, test_ret);
+    SUITE_ADD_TEST(suite, test_ret_stack_underflow);
     SUITE_ADD_TEST(suite, test_jp_addr);
     SUITE_ADD_TEST(suite, test_call_addr);
     SUITE_ADD_TEST(suite, test_call_addr_stack_overflow);

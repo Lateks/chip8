@@ -50,6 +50,9 @@ void print_error(struct chip8* vm) {
         case ERROR_STACK_OVERFLOW:
             printf("Error: Stack overflow at %04x\n", vm->pc);
             break;
+        case ERROR_STACK_UNDERFLOW:
+            printf("Error: Stack underflow at %04x\n", vm->pc);
+            break;
         default:
             printf("Error: Unknown error\n");
     }
@@ -60,6 +63,15 @@ void vm_run(struct chip8 *vm) {
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
 
     switch (instruction_type) {
+        case 0:
+            switch (instruction) {
+                case RET:
+                    run_ret(vm);
+                    break;
+                default:
+                    printf("Skipping unknown 0nnn instruction\n");
+            }
+            break;
         case 1:
             run_jp_addr(vm, instruction);
             break;

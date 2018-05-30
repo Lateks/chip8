@@ -1,5 +1,14 @@
 #include "instructions.h"
 
+void run_ret(struct chip8 *vm) {
+    if (vm->sp > 0) {
+        vm->pc = vm->stack[vm->sp - 1];
+        --vm->sp;
+    } else {
+        vm->error = ERROR_STACK_UNDERFLOW;
+    }
+}
+
 void run_jp_addr(struct chip8 *vm, uint16_t instruction) {
     vm->pc = MEM_ADDR(instruction);
 }

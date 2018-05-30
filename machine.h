@@ -9,6 +9,7 @@
 #define STACK_SIZE 16
 
 #define ERROR_STACK_OVERFLOW 1
+#define ERROR_STACK_UNDERFLOW 2
 
 struct chip8 {
     uint8_t ram[RAM_SIZE];

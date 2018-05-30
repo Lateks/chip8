@@ -4,9 +4,6 @@
 #include "instructions.h"
 #include "machine.h"
 
-#define CLS 0x00E0
-#define RET 0x00EE
-
 #define print(c, name) printf("%04x: %s\n", c, name)
 
 void print_mem_instr(char *name, uint16_t instr) {

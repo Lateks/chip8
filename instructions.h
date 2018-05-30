@@ -11,6 +11,11 @@
 #define REG_2(instr) (instr & 0x00F0) >> 4
 #define LOW_NIBBLE(instr) instr & 0x000F
 
+#define CLS 0x00E0
+#define RET 0x00EE
+
+void run_ret(struct chip8 *vm);
+
 void run_jp_addr(struct chip8 *vm, uint16_t instruction);
 
 void run_call_addr(struct chip8 *vm, uint16_t instruction);

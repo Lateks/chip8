@@ -61,6 +61,7 @@ void print_error(struct chip8* vm) {
 void vm_run(struct chip8 *vm) {
     uint16_t instruction = read_instruction(vm);
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
+    uint16_t old_pc = vm->pc;
 
     switch (instruction_type) {
         case 0:
@@ -99,7 +100,10 @@ void vm_run(struct chip8 *vm) {
         exit(vm->error);
     }
 
-    vm->pc += 2;
+    if (vm->pc == old_pc) {
+        vm->pc += 2;
+    }
+
     if (vm->reg_dt > 0) --vm->reg_dt;
     if (vm->reg_st > 0) --vm->reg_st;
 }

@@ -11,7 +11,8 @@
 enum vm_error {
     NO_ERROR,
     ERROR_STACK_OVERFLOW,
-    ERROR_STACK_UNDERFLOW
+    ERROR_STACK_UNDERFLOW,
+    ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS
 };
 
 struct chip8 {
@@ -24,6 +25,7 @@ struct chip8 {
     uint8_t reg_dt;
     uint8_t reg_st;
     enum vm_error error;
+    uint16_t prog_mem_end;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);

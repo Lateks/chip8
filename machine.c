@@ -27,6 +27,7 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
     vm->pc = PROG_MEM_START;
     vm->sp = 0;
     vm->error = 0;
+    vm->prog_mem_end = PROG_MEM_START + bytes_read;
 
     return bytes_read;
 }
@@ -52,6 +53,9 @@ void print_error(struct chip8* vm) {
             break;
         case ERROR_STACK_UNDERFLOW:
             printf("Error: Stack underflow at %04x\n", vm->pc);
+            break;
+        case ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS:
+            printf("Error: Out of bounds memory access at %04x\n", vm->pc);
             break;
         default:
             printf("Error: Unknown error\n");
@@ -93,6 +97,11 @@ void vm_run(struct chip8 *vm) {
             break;
         default:
             printf("Skipping unknown instruction %x\n", instruction);
+    }
+
+
+    if (vm->pc < PROG_MEM_START || vm->pc >= vm->prog_mem_end) {
+        vm->error = ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS;
     }
 
     if (vm->error) {

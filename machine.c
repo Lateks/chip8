@@ -78,6 +78,9 @@ void vm_run(struct chip8 *vm) {
         case 2:
             run_call_addr(vm, instruction);
             break;
+        case 3:
+            run_se_vx_byte(vm, instruction);
+            break;
         case 6:
             run_ld_vx_byte(vm, instruction);
             break;

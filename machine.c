@@ -89,6 +89,13 @@ void vm_run(struct chip8 *vm) {
         case 4:
             run_sne_vx_byte(vm, instruction);
             break;
+        case 5:
+            if (LOW_NIBBLE(instruction) == 0) {
+                run_se_vx_vy(vm, instruction);
+            } else {
+                printf("Skipping unknown 5nnn instruction\n");
+            }
+            break;
         case 6:
             run_ld_vx_byte(vm, instruction);
             break;

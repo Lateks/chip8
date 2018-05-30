@@ -24,6 +24,8 @@ void run_se_vx_byte(struct chip8 *vm, uint16_t instruction);
 
 void run_sne_vx_byte(struct chip8 *vm, uint16_t instruction);
 
+void run_se_vx_vy(struct chip8 *vm, uint16_t instruction);
+
 void run_ld_vx_byte(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_i_addr(struct chip8 *vm, uint16_t instruction);

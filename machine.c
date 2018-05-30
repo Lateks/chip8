@@ -57,6 +57,9 @@ void print_error(struct chip8* vm) {
         case ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS:
             printf("Error: Out of bounds memory access at %04x\n", vm->pc);
             break;
+        case ERROR_INTEGER_OVERFLOW:
+            printf("Error: integer overflow at %04x\n", vm->pc);
+            break;
         default:
             printf("Error: Unknown error\n");
     }
@@ -98,6 +101,9 @@ void vm_run(struct chip8 *vm) {
             break;
         case 6:
             run_ld_vx_byte(vm, instruction);
+            break;
+        case 7:
+            run_add_vx_byte(vm, instruction);
             break;
         case 8:
             run_8xyn(vm, instruction);

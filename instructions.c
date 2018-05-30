@@ -77,3 +77,7 @@ void run_ld_vx_vy(struct chip8 *vm, uint16_t instruction) {
 
     vm->reg_v[reg1] = vm->reg_v[reg2];
 }
+
+void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction) {
+    vm->pc = vm->reg_v[0] + MEM_ADDR(instruction);
+}

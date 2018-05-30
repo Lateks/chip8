@@ -34,4 +34,6 @@ void run_ld_i_addr(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_vx_vy(struct chip8 *vm, uint16_t instruction);
 
+void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction);
+
 #endif

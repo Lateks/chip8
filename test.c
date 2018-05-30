@@ -159,6 +159,14 @@ void test_ld_vx_vy(CuTest* tc) {
     CuAssertIntEquals(tc, 4, vm.reg_v[7]);
 }
 
+void test_jp_v0_addr(CuTest* tc) {
+    struct chip8 vm = { .pc = 0x200 };
+    vm.reg_v[0] = 0x0EE;
+
+    run_jp_v0_addr(&vm, 0xB311);
+    CuAssertIntEquals(tc, 0x3FF, vm.pc);
+}
+
 CuSuite* get_instruction_test_suite(void)
 {
     CuSuite* suite = CuSuiteNew();
@@ -175,6 +183,7 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_add_vx_byte);
     SUITE_ADD_TEST(suite, test_ld_i_addr);
     SUITE_ADD_TEST(suite, test_ld_vx_vy);
+    SUITE_ADD_TEST(suite, test_jp_v0_addr);
 
     return suite;
 }

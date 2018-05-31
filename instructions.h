@@ -36,6 +36,12 @@ void run_ld_i_addr(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_vx_vy(struct chip8 *vm, uint16_t instruction);
 
+void run_or_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_and_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_xor_vx_vy(struct chip8 *vm, uint16_t instruction);
+
 void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction);
 
 void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction);

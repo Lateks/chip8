@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include "instructions.h"
 
+#define OP_VX_VY(op, vm, instruction) \
+    uint8_t reg1 = REG_1(instruction); \
+    uint8_t reg2 = REG_2(instruction); \
+    vm->reg_v[reg1] = vm->reg_v[reg1] op vm->reg_v[reg2];
+
 void run_ret(struct chip8 *vm) {
     if (vm->sp > 0) {
         vm->pc = vm->stack[vm->sp - 1];
@@ -86,6 +91,18 @@ void run_ld_vx_vy(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg2 = REG_2(instruction);
 
     vm->reg_v[reg1] = vm->reg_v[reg2];
+}
+
+void run_or_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    OP_VX_VY(|, vm, instruction);
+}
+
+void run_and_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    OP_VX_VY(&, vm, instruction);
+}
+
+void run_xor_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    OP_VX_VY(^, vm, instruction);
 }
 
 void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction) {

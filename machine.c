@@ -39,6 +39,15 @@ void run_8xyn(struct chip8 *vm, uint16_t instruction) {
         case 0:
             run_ld_vx_vy(vm, instruction);
             break;
+        case 1:
+            run_or_vx_vy(vm, instruction);
+            break;
+        case 2:
+            run_and_vx_vy(vm, instruction);
+            break;
+        case 3:
+            run_xor_vx_vy(vm, instruction);
+            break;
         default:
             printf("Skipping unknown 8xyn instruction %x\n", instruction);
     }

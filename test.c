@@ -175,6 +175,36 @@ void test_ld_vx_vy(CuTest* tc) {
     CuAssertIntEquals(tc, 4, vm.reg_v[7]);
 }
 
+void test_or_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 0b00110011;
+    vm.reg_v[0xB] = 0b01010101;
+
+    run_or_vx_vy(&vm, 0x8AB1);
+    CuAssertIntEquals(tc, 0b01110111, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0b01010101, vm.reg_v[0xB]);
+}
+
+void test_and_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 0b00001111;
+    vm.reg_v[0xB] = 0b01010101;
+
+    run_and_vx_vy(&vm, 0x8AB2);
+    CuAssertIntEquals(tc, 0b00000101, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0b01010101, vm.reg_v[0xB]);
+}
+
+void test_xor_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 0b11110000;
+    vm.reg_v[0xB] = 0b01010101;
+
+    run_xor_vx_vy(&vm, 0x8AB2);
+    CuAssertIntEquals(tc, 0b10100101, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0b01010101, vm.reg_v[0xB]);
+}
+
 void test_jp_v0_addr(CuTest* tc) {
     struct chip8 vm = { .pc = 0x200 };
     vm.reg_v[0] = 0x0EE;
@@ -242,6 +272,9 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_sne_vx_vy);
     SUITE_ADD_TEST(suite, test_ld_i_addr);
     SUITE_ADD_TEST(suite, test_ld_vx_vy);
+    SUITE_ADD_TEST(suite, test_or_vx_vy);
+    SUITE_ADD_TEST(suite, test_and_vx_vy);
+    SUITE_ADD_TEST(suite, test_xor_vx_vy);
     SUITE_ADD_TEST(suite, test_jp_v0_addr);
     SUITE_ADD_TEST(suite, test_rnd_vx_byte);
 

@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <time.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "CuTest.h"
 #include "machine.h"
 #include "instructions.h"
@@ -180,6 +183,48 @@ void test_jp_v0_addr(CuTest* tc) {
     CuAssertIntEquals(tc, 0x3FF, vm.pc);
 }
 
+void test_rnd_vx_byte(CuTest* tc) {
+    srand(time(NULL));
+
+    struct chip8 vm;
+
+    bool pass = false;
+    int rounds = 0;
+    while (rounds < 20 && !pass) {
+        run_rnd_vx_byte(&vm, 0xCA11);
+        pass = vm.reg_v[0xA] > 0;
+        ++rounds;
+    }
+    CuAssertTrue(tc, pass);
+
+    rounds = 0;
+    pass = true;
+    while (rounds < 20 && pass) {
+        run_rnd_vx_byte(&vm, 0xCA01);
+        pass = (vm.reg_v[0xA] & 0xF0) == 0;
+        ++rounds;
+    }
+    CuAssertTrue(tc, pass);
+
+    rounds = 0;
+    pass = true;
+    while (rounds < 20 && pass) {
+        run_rnd_vx_byte(&vm, 0xCA10);
+        pass = (vm.reg_v[0xA] & 0x0F) == 0;
+        ++rounds;
+    }
+    CuAssertTrue(tc, pass);
+
+    rounds = 0;
+    pass = true;
+    while (rounds < 20 && pass) {
+        run_rnd_vx_byte(&vm, 0xCA00);
+        pass = vm.reg_v[0xA] == 0;
+        ++rounds;
+    }
+    CuAssertTrue(tc, pass);
+}
+
 CuSuite* get_instruction_test_suite(void)
 {
     CuSuite* suite = CuSuiteNew();
@@ -198,6 +243,7 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_ld_i_addr);
     SUITE_ADD_TEST(suite, test_ld_vx_vy);
     SUITE_ADD_TEST(suite, test_jp_v0_addr);
+    SUITE_ADD_TEST(suite, test_rnd_vx_byte);
 
     return suite;
 }

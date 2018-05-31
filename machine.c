@@ -121,6 +121,9 @@ void vm_run(struct chip8 *vm) {
         case 0xB:
             run_jp_v0_addr(vm, instruction);
             break;
+        case 0xC:
+            run_rnd_vx_byte(vm, instruction);
+            break;
         default:
             printf("Skipping unknown instruction %x\n", instruction);
     }

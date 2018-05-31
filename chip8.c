@@ -22,6 +22,8 @@ int main(int argc, char *argv[]) {
     size_t bytes_read = vm_init_with_rom(&vm, argv[1]);
     printf("Successfully read %lu bytes from file\n", bytes_read);
 
+    srand(time(NULL));
+
     while (true) {
         if (sec_since_update >= UPDATE_INTERVAL_SECONDS) {
             vm_run(&vm);

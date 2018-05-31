@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "instructions.h"
 
 void run_ret(struct chip8 *vm) {
@@ -89,4 +90,12 @@ void run_ld_vx_vy(struct chip8 *vm, uint16_t instruction) {
 
 void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction) {
     vm->pc = vm->reg_v[0] + MEM_ADDR(instruction);
+}
+
+void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    uint8_t r = rand() % 255u;
+    uint8_t byte = LOW_BYTE(instruction);
+
+    vm->reg_v[reg] = r & byte;
 }

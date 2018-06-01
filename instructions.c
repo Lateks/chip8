@@ -105,6 +105,47 @@ void run_xor_vx_vy(struct chip8 *vm, uint16_t instruction) {
     OP_VX_VY(^, vm, instruction);
 }
 
+void run_add_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg1 = REG_1(instruction);
+    uint8_t reg2 = REG_2(instruction);
+    uint16_t result = vm->reg_v[reg1] + vm->reg_v[reg2];
+
+    vm->reg_v[0xF] = vm->reg_v[reg1] > UINT8_MAX - vm->reg_v[reg2];
+    vm->reg_v[reg1] = LOW_BYTE(result);
+}
+
+void run_sub_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg1 = REG_1(instruction);
+    uint8_t reg2 = REG_2(instruction);
+
+    uint8_t result = (int8_t) vm->reg_v[reg1] - (int8_t) vm->reg_v[reg2];
+    vm->reg_v[0xF] = vm->reg_v[reg1] > vm->reg_v[reg2];
+    vm->reg_v[reg1] = result;
+}
+
+void run_shr_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg1 = REG_1(instruction);
+
+    vm->reg_v[0xF] = LSB(vm->reg_v[reg1]);
+    vm->reg_v[reg1] = vm->reg_v[reg1] >> 1;
+}
+
+void run_subn_vx_vy(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg1 = REG_1(instruction);
+    uint8_t reg2 = REG_2(instruction);
+
+    uint8_t result = (int8_t) vm->reg_v[reg2] - (int8_t) vm->reg_v[reg1];
+    vm->reg_v[0xF] = vm->reg_v[reg2] > vm->reg_v[reg1];
+    vm->reg_v[reg1] = result;
+}
+
+void run_shl_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg1 = REG_1(instruction);
+
+    vm->reg_v[0xF] = MSB(vm->reg_v[reg1]);
+    vm->reg_v[reg1] = vm->reg_v[reg1] << 1;
+}
+
 void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction) {
     vm->pc = vm->reg_v[0] + MEM_ADDR(instruction);
 }

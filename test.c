@@ -200,9 +200,86 @@ void test_xor_vx_vy(CuTest* tc) {
     vm.reg_v[0xA] = 0b11110000;
     vm.reg_v[0xB] = 0b01010101;
 
-    run_xor_vx_vy(&vm, 0x8AB2);
+    run_xor_vx_vy(&vm, 0x8AB3);
     CuAssertIntEquals(tc, 0b10100101, vm.reg_v[0xA]);
     CuAssertIntEquals(tc, 0b01010101, vm.reg_v[0xB]);
+}
+
+void test_add_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 150;
+    vm.reg_v[0xB] = 33;
+    vm.reg_v[0xF] = 1;
+
+    run_add_vx_vy(&vm, 0x8AB4);
+    CuAssertIntEquals(tc, 183, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0, vm.reg_v[0xF]);
+
+    vm.reg_v[0xA] = 230;
+    vm.reg_v[0xB] = 100;
+    run_add_vx_vy(&vm, 0x8AB4);
+    CuAssertIntEquals(tc, 0b01001010, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 1, vm.reg_v[0xF]);
+}
+
+void test_sub_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 150;
+    vm.reg_v[0xB] = 30;
+
+    run_sub_vx_vy(&vm, 0x8AB5);
+    CuAssertIntEquals(tc, 120, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 1, vm.reg_v[0xF]);
+
+    vm.reg_v[0xA] = 150;
+    vm.reg_v[0xB] = 30;
+    run_sub_vx_vy(&vm, 0x8BA5);
+    CuAssertIntEquals(tc, (uint8_t) -120, vm.reg_v[0xB]);
+    CuAssertIntEquals(tc, 0, vm.reg_v[0xF]);
+}
+
+void test_shr_vx(CuTest* tc) {
+    struct chip8 vm;
+
+    vm.reg_v[0xA] = 0b00110101;
+    run_shr_vx(&vm, 0x8A06);
+    CuAssertIntEquals(tc, 0b00011010, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 1, vm.reg_v[0xF]);
+
+    vm.reg_v[0xA] = 0b11110010;
+    run_shr_vx(&vm, 0x8A06);
+    CuAssertIntEquals(tc, 0b01111001, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0, vm.reg_v[0xF]);
+}
+
+void test_subn_vx_vy(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 150;
+    vm.reg_v[0xB] = 30;
+
+    run_subn_vx_vy(&vm, 0x8AB7);
+    CuAssertIntEquals(tc, (uint8_t) -120, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0, vm.reg_v[0xF]);
+
+    vm.reg_v[0xA] = 150;
+    vm.reg_v[0xB] = 30;
+    run_subn_vx_vy(&vm, 0x8BA7);
+    CuAssertIntEquals(tc, 120, vm.reg_v[0xB]);
+    CuAssertIntEquals(tc, 1, vm.reg_v[0xF]);
+}
+
+void test_shl_vx(CuTest* tc) {
+    struct chip8 vm;
+
+    vm.reg_v[0xA] = 0b11110101;
+    run_shl_vx(&vm, 0x8A0E);
+    CuAssertIntEquals(tc, 0b11101010, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 1, vm.reg_v[0xF]);
+
+    vm.reg_v[0xA] = 0b01011111;
+    run_shl_vx(&vm, 0x8A0E);
+    CuAssertIntEquals(tc, 0b10111110, vm.reg_v[0xA]);
+    CuAssertIntEquals(tc, 0, vm.reg_v[0xF]);
 }
 
 void test_jp_v0_addr(CuTest* tc) {
@@ -275,6 +352,11 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_or_vx_vy);
     SUITE_ADD_TEST(suite, test_and_vx_vy);
     SUITE_ADD_TEST(suite, test_xor_vx_vy);
+    SUITE_ADD_TEST(suite, test_add_vx_vy);
+    SUITE_ADD_TEST(suite, test_sub_vx_vy);
+    SUITE_ADD_TEST(suite, test_shr_vx);
+    SUITE_ADD_TEST(suite, test_subn_vx_vy);
+    SUITE_ADD_TEST(suite, test_shl_vx);
     SUITE_ADD_TEST(suite, test_jp_v0_addr);
     SUITE_ADD_TEST(suite, test_rnd_vx_byte);
 

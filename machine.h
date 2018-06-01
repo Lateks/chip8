@@ -22,9 +22,9 @@ struct chip8 {
     uint16_t pc;
     uint16_t sp;
     uint16_t reg_i;
-    uint8_t reg_v[16];
     uint8_t reg_dt;
     uint8_t reg_st;
+    uint8_t reg_v[16];
     enum vm_error error;
     uint16_t prog_mem_end;
 };

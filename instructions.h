@@ -10,6 +10,8 @@
 #define REG_1(instr) ((instr & 0x0F00) >> 8)
 #define REG_2(instr) ((instr & 0x00F0) >> 4)
 #define LOW_NIBBLE(instr) (instr & 0x000F)
+#define MSB(byte) (byte >> 7)
+#define LSB(byte) (byte & 1)
 
 #define CLS 0x00E0
 #define RET 0x00EE
@@ -41,6 +43,16 @@ void run_or_vx_vy(struct chip8 *vm, uint16_t instruction);
 void run_and_vx_vy(struct chip8 *vm, uint16_t instruction);
 
 void run_xor_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_add_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_sub_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_shr_vx(struct chip8 *vm, uint16_t instruction);
+
+void run_subn_vx_vy(struct chip8 *vm, uint16_t instruction);
+
+void run_shl_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction);
 

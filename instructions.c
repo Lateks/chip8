@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "instructions.h"
+#include "sdl_system.h"
 
 #define OP_VX_VY(op, vm, instruction) \
     uint8_t reg1 = REG_1(instruction); \
@@ -178,6 +179,20 @@ void run_drw_vx_vy_n(struct chip8 *vm, uint16_t instruction) {
         }
     }
     vm->draw_flag = true;
+}
+
+void run_skp_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    if (is_key_down(vm->reg_v[reg])) {
+        vm->pc += 4;
+    }
+}
+
+void run_sknp_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    if (!is_key_down(vm->reg_v[reg])) {
+        vm->pc += 4;
+    }
 }
 
 void run_ld_f_vx(struct chip8 *vm, uint16_t instruction) {

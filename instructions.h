@@ -60,6 +60,10 @@ void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction);
 
 void run_drw_vx_vy_n(struct chip8 *vm, uint16_t instruction);
 
+void run_skp_vx(struct chip8 *vm, uint16_t instruction);
+
+void run_sknp_vx(struct chip8 *vm, uint16_t instruction);
+
 void run_ld_f_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_b_vx(struct chip8 *vm, uint16_t instruction);

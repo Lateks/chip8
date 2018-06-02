@@ -1,6 +1,7 @@
 #ifndef MACHINE_H
 #define MACHINE_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
 

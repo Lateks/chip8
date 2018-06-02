@@ -197,6 +197,19 @@ void vm_run(struct chip8 *vm) {
         case 0xD:
             run_drw_vx_vy_n(vm, instruction);
             break;
+        case 0xE:
+            switch (LOW_BYTE(instruction)) {
+                case 0x9E:
+                    run_skp_vx(vm, instruction);
+                    break;
+                case 0xA1:
+                    run_sknp_vx(vm, instruction);
+                    break;
+                default:
+                    printf("Skipping unknown 0xEnnn instruction %x\n", instruction);
+                    break;
+            }
+            break;
         case 0xF:
             switch (LOW_BYTE(instruction)) {
                 case 0x29:

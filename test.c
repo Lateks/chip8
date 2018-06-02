@@ -120,14 +120,14 @@ void test_ld_vx_byte(CuTest* tc) {
 
 void test_add_vx_byte(CuTest* tc) {
     struct chip8 vm;
-    vm.reg_v[0xA] = 0x10;
 
+    vm.reg_v[0xA] = 0x10;
     run_add_vx_byte(&vm, 0x7A02);
     CuAssertIntEquals(tc, 0x12, vm.reg_v[0xA]);
 
+    vm.reg_v[0xA] = 0x10;
     run_add_vx_byte(&vm, 0x7AFF);
-    CuAssertIntEquals(tc, 0x12, vm.reg_v[0xA]);
-    CuAssertIntEquals(tc, ERROR_INTEGER_OVERFLOW, vm.error);
+    CuAssertIntEquals(tc, 0xF, vm.reg_v[0xA]);
 }
 
 void test_sne_vx_vy(CuTest* tc) {

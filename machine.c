@@ -127,9 +127,6 @@ void print_error(struct chip8* vm, uint16_t old_pc) {
         case ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS:
             printf("Error: Out of bounds memory access at %04x\n", old_pc);
             break;
-        case ERROR_INTEGER_OVERFLOW:
-            printf("Error: integer overflow at %04x\n", old_pc);
-            break;
         default:
             printf("Error: Unknown error\n");
     }

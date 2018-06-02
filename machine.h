@@ -31,10 +31,16 @@ struct chip8 {
     uint8_t reg_v[16];
     enum vm_error error;
     uint16_t prog_mem_end;
+    uint8_t screen[SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX];
+    bool draw_flag;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);
 
 void vm_run(struct chip8 *vm);
+
+void clear_screen(struct chip8 *vm);
+
+bool xor_pixel(struct chip8 *vm, int x, int y, bool value);
 
 #endif

@@ -1,4 +1,5 @@
 #include "sdl_system.h"
+#include "machine.h"
 
 SDL_Scancode hex_key_map[] = {
     SDL_SCANCODE_N, // 0x0,
@@ -36,6 +37,12 @@ struct io_state init_io(int screen_width, int screen_height) {
         if (state.window == NULL) {
             printf("Failed to create SDL Window. Error: %s\n", SDL_GetError());
             state.quit = true;
+        } else {
+            state.renderer = SDL_CreateRenderer(state.window, -1, SDL_RENDERER_ACCELERATED);
+            if (state.renderer == NULL) {
+                printf("Failed to create SDL Renderer. Error: %s\n", SDL_GetError());
+                state.quit = true;
+            }
         }
     }
 
@@ -54,8 +61,13 @@ void handle_events(struct io_state *state) {
 void close(struct io_state *state) {
     if (state->window) {
         SDL_DestroyWindow(state->window);
-        SDL_Quit();
+        state->window = NULL;
     }
+    if (state->renderer) {
+        SDL_DestroyRenderer(state->renderer);
+        state->renderer = NULL;
+    }
+    SDL_Quit();
 }
 
 bool is_key_down(uint8_t hex_key_code) {
@@ -65,4 +77,26 @@ bool is_key_down(uint8_t hex_key_code) {
     const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
     const SDL_Scancode scancode = hex_key_map[hex_key_code];
     return keyboard_state[scancode];
+}
+
+void draw_screen(struct io_state *state, const struct chip8 * const vm) {
+    SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 0);
+    SDL_RenderClear(state->renderer);
+
+    for (int y = 0; y < SCREEN_HEIGHT_PX; ++y) {
+        for (int x = 0; x < SCREEN_WIDTH_PX; ++x) {
+            if (vm->screen[y * SCREEN_WIDTH_PX + x]) {
+                SDL_Rect fillRect = {
+                    x * SCALE_MULTIPLIER,
+                    y * SCALE_MULTIPLIER,
+                    SCALE_MULTIPLIER,
+                    SCALE_MULTIPLIER
+                };
+                SDL_SetRenderDrawColor(state->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                SDL_RenderFillRect(state->renderer, &fillRect);
+            }
+        }
+    }
+
+    SDL_RenderPresent(state->renderer);
 }

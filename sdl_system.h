@@ -3,11 +3,13 @@
 
 #include <stdbool.h>
 #include <SDL.h>
+#include "machine.h"
 
 #define SCALE_MULTIPLIER 10
 
 typedef struct io_state {
     SDL_Window *window;
+    SDL_Renderer *renderer;
     bool quit;
 } io_state;
 
@@ -18,5 +20,7 @@ void handle_events(struct io_state *state);
 bool is_key_down(uint8_t hex_key_code);
 
 void close(struct io_state *state);
+
+void draw_screen(struct io_state *state, const struct chip8 * const vm);
 
 #endif

@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,8 +39,10 @@ void init(struct chip8 *vm, size_t program_size) {
     vm->sp = 0;
     vm->error = 0;
     vm->prog_mem_end = PROG_MEM_START + program_size;
+    vm->draw_flag = true;
 
     memcpy(&vm->ram[HEX_SPRITE_START_ADDR], hex_sprites, 16 * HEX_SPRITE_LEN);
+    clear_screen(vm);
 }
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
@@ -56,6 +59,23 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
     init(vm, bytes_read);
 
     return bytes_read;
+}
+
+void clear_screen(struct chip8 *vm) {
+    memset(vm->screen, 0, SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX);
+}
+
+int wrap_coordinate(int c, int max) {
+    if (c < 0) return max + c;
+    if (c >= max) return c - max;
+    return c;
+}
+
+bool xor_pixel(struct chip8 *vm, int x, int y, bool value) {
+    int coordinate = wrap_coordinate(y, SCREEN_HEIGHT_PX) * SCREEN_WIDTH_PX + wrap_coordinate(x, SCREEN_WIDTH_PX);
+    int old_value = vm->screen[coordinate];
+    vm->screen[coordinate] = old_value ^ value;
+    return old_value;
 }
 
 void run_8xyn(struct chip8 *vm, uint16_t instruction) {
@@ -173,6 +193,9 @@ void vm_run(struct chip8 *vm) {
             break;
         case 0xC:
             run_rnd_vx_byte(vm, instruction);
+            break;
+        case 0xD:
+            run_drw_vx_vy_n(vm, instruction);
             break;
         case 0xF:
             switch (LOW_BYTE(instruction)) {

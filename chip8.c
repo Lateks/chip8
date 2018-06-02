@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
             vm_run(&vm);
             sec_since_update = 0;
         }
+        if (vm.draw_flag) {
+            draw_screen(&state, &vm);
+            vm.draw_flag = false;
+        }
 
         temp = clock();
         sec_since_update += (temp - loop_start) / (CLOCKS_PER_SEC * 1.f);

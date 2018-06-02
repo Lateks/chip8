@@ -184,3 +184,17 @@ void run_ld_f_vx(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     vm->reg_i = HEX_SPRITE_START_ADDR + vm->reg_v[reg] * HEX_SPRITE_LEN;
 }
+
+void run_ld_b_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    uint8_t regValue = vm->reg_v[reg];
+
+    uint8_t hundredsDigit = regValue / 100;
+    uint8_t tensDigit = (regValue - hundredsDigit * 100) / 10;
+    uint8_t lowDigit = regValue % 10;
+
+    uint16_t location = vm->reg_i;
+    vm->ram[location] = hundredsDigit;
+    vm->ram[location + 1] = tensDigit;
+    vm->ram[location + 2] = lowDigit;
+}

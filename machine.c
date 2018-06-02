@@ -202,6 +202,9 @@ void vm_run(struct chip8 *vm) {
                 case 0x29:
                     run_ld_f_vx(vm, instruction);
                     break;
+                case 0x33:
+                    run_ld_b_vx(vm, instruction);
+                    break;
                 default:
                     printf("Skipping unknown 0xFnnn instruction %x\n", instruction);
                     break;

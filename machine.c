@@ -214,6 +214,9 @@ void vm_run(struct chip8 *vm, float dt) {
                 case 0x33:
                     run_ld_b_vx(vm, instruction);
                     break;
+                case 0x55:
+                    run_ld_i_vx(vm, instruction);
+                    break;
                 case 0x65:
                     run_ld_vx_i(vm, instruction);
                     break;

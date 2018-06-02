@@ -226,6 +226,15 @@ void run_ld_b_vx(struct chip8 *vm, uint16_t instruction) {
     vm->ram[location + 2] = lowDigit;
 }
 
+void run_ld_i_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    uint16_t location = vm->reg_i;
+    int i;
+    for (i = 0; i <= reg; ++i) {
+        vm->ram[location++] = vm->reg_v[i];
+    }
+}
+
 void run_ld_vx_i(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     uint16_t location = vm->reg_i;

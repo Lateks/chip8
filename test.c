@@ -386,6 +386,27 @@ void test_ld_b_vx(CuTest* tc) {
     CuAssertIntEquals(tc, 6, vm.ram[102]);
 }
 
+void test_ld_i_vx(CuTest* tc) {
+    struct chip8 vm = { .reg_i = 100 };
+    for (int i = 0; i < 16; ++i) {
+        vm.reg_v[i] = i + 1;
+    }
+
+    run_ld_i_vx(&vm, 0xF555);
+    CuAssertIntEquals(tc, 1, vm.ram[100]);
+    CuAssertIntEquals(tc, 2, vm.ram[101]);
+    CuAssertIntEquals(tc, 3, vm.ram[102]);
+    CuAssertIntEquals(tc, 4, vm.ram[103]);
+    CuAssertIntEquals(tc, 5, vm.ram[104]);
+    CuAssertIntEquals(tc, 6, vm.ram[105]);
+    CuAssertIntEquals(tc, 0, vm.ram[106]);
+
+    run_ld_i_vx(&vm, 0xFF55);
+    for (int j = 0; j < 16; ++j) {
+        CuAssertIntEquals(tc, j+1, vm.ram[100 + j]);
+    }
+}
+
 void test_ld_vx_i(CuTest* tc) {
     struct chip8 vm = { .reg_i = 100 };
     for (int i = 0; i < 16; ++i) {
@@ -438,6 +459,7 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_ld_dt_vx);
     SUITE_ADD_TEST(suite, test_ld_f_vx);
     SUITE_ADD_TEST(suite, test_ld_b_vx);
+    SUITE_ADD_TEST(suite, test_ld_i_vx);
     SUITE_ADD_TEST(suite, test_ld_vx_i);
 
     return suite;

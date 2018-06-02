@@ -47,6 +47,6 @@ void vm_update_timers(struct chip8 *vm, float dt);
 
 void clear_screen(struct chip8 *vm);
 
-bool xor_pixel(struct chip8 *vm, int x, int y, bool value);
+bool xor_pixel(struct chip8 *vm, int x, int y, uint8_t value);
 
 #endif

@@ -71,11 +71,15 @@ int wrap_coordinate(int c, int max) {
     return c;
 }
 
-bool xor_pixel(struct chip8 *vm, int x, int y, bool value) {
-    int coordinate = wrap_coordinate(y, SCREEN_HEIGHT_PX) * SCREEN_WIDTH_PX + wrap_coordinate(x, SCREEN_WIDTH_PX);
-    int old_value = vm->screen[coordinate];
-    vm->screen[coordinate] = old_value ^ value;
-    return old_value;
+bool xor_pixel(struct chip8 *vm, int x, int y, uint8_t value) {
+    if (value) {
+        int coordinate = wrap_coordinate(y, SCREEN_HEIGHT_PX) * SCREEN_WIDTH_PX + wrap_coordinate(x, SCREEN_WIDTH_PX);
+        uint8_t old_value = vm->screen[coordinate];
+        vm->screen[coordinate] = old_value ^ value;
+        return old_value;
+    } else {
+        return false;
+    }
 }
 
 void run_8xyn(struct chip8 *vm, uint16_t instruction) {

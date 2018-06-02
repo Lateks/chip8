@@ -157,18 +157,20 @@ void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction) {
 }
 
 void run_drw_vx_vy_n(struct chip8 *vm, uint16_t instruction) {
-    int n = LOW_NIBBLE(instruction);
+    int sprite_bytes = LOW_NIBBLE(instruction);
     int x_coord = vm->reg_v[REG_1(instruction)];
     int y_coord = vm->reg_v[REG_2(instruction)];
     uint16_t start = vm->reg_i;
     int i, j;
     uint8_t byte;
+    uint8_t pixel;
 
     vm->reg_v[0xF] = 0;
-    for (i = 0; i < n; ++i) {
+    for (i = 0; i < sprite_bytes; ++i) {
         byte = vm->ram[start + i];
         for (j = 7; j >= 0; --j) {
-            if (xor_pixel(vm, x_coord + j, y_coord + i, LSB(byte))) {
+            pixel = LSB(byte);
+            if (xor_pixel(vm, x_coord + j, y_coord + i, pixel)) {
                 vm->reg_v[0xF] = 1;
             }
             byte >>= 1;

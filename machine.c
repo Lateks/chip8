@@ -214,6 +214,12 @@ void vm_run(struct chip8 *vm) {
             break;
         case 0xF:
             switch (LOW_BYTE(instruction)) {
+                case 0x7:
+                    run_ld_vx_dt(vm, instruction);
+                    break;
+                case 0x15:
+                    run_ld_dt_vx(vm, instruction);
+                    break;
                 case 0x29:
                     run_ld_f_vx(vm, instruction);
                     break;

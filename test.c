@@ -332,6 +332,22 @@ void test_rnd_vx_byte(CuTest* tc) {
     CuAssertTrue(tc, pass);
 }
 
+void test_ld_vx_dt(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_dt = 20;
+
+    run_ld_vx_dt(&vm, 0xFA07);
+    CuAssertIntEquals(tc, 20, vm.reg_v[0xA]);
+}
+
+void test_ld_dt_vx(CuTest* tc) {
+    struct chip8 vm;
+    vm.reg_v[0xA] = 50;
+
+    run_ld_dt_vx(&vm, 0xFA15);
+    CuAssertIntEquals(tc, 50, vm.reg_dt);
+}
+
 void test_ld_f_vx(CuTest* tc) {
     struct chip8 vm;
 
@@ -418,6 +434,8 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_shl_vx);
     SUITE_ADD_TEST(suite, test_jp_v0_addr);
     SUITE_ADD_TEST(suite, test_rnd_vx_byte);
+    SUITE_ADD_TEST(suite, test_ld_vx_dt);
+    SUITE_ADD_TEST(suite, test_ld_dt_vx);
     SUITE_ADD_TEST(suite, test_ld_f_vx);
     SUITE_ADD_TEST(suite, test_ld_b_vx);
     SUITE_ADD_TEST(suite, test_ld_vx_i);

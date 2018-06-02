@@ -114,21 +114,21 @@ void run_8xyn(struct chip8 *vm, uint16_t instruction) {
     }
 }
 
-void print_error(struct chip8* vm) {
+void print_error(struct chip8* vm, uint16_t old_pc) {
     switch (vm->error) {
         case NO_ERROR:
             break;
         case ERROR_STACK_OVERFLOW:
-            printf("Error: Stack overflow at %04x\n", vm->pc);
+            printf("Error: Stack overflow at %04x\n", old_pc);
             break;
         case ERROR_STACK_UNDERFLOW:
-            printf("Error: Stack underflow at %04x\n", vm->pc);
+            printf("Error: Stack underflow at %04x\n", old_pc);
             break;
         case ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS:
-            printf("Error: Out of bounds memory access at %04x\n", vm->pc);
+            printf("Error: Out of bounds memory access at %04x\n", old_pc);
             break;
         case ERROR_INTEGER_OVERFLOW:
-            printf("Error: integer overflow at %04x\n", vm->pc);
+            printf("Error: integer overflow at %04x\n", old_pc);
             break;
         default:
             printf("Error: Unknown error\n");
@@ -139,6 +139,8 @@ void vm_run(struct chip8 *vm) {
     uint16_t instruction = read_instruction(vm);
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
     uint16_t old_pc = vm->pc;
+
+    vm->pc += 2;
 
     switch (instruction_type) {
         case 0:
@@ -236,12 +238,8 @@ void vm_run(struct chip8 *vm) {
     }
 
     if (vm->error) {
-        print_error(vm);
+        print_error(vm, old_pc);
         exit(vm->error);
-    }
-
-    if (vm->pc == old_pc) {
-        vm->pc += 2;
     }
 
     if (vm->reg_dt > 0) --vm->reg_dt;

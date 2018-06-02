@@ -35,7 +35,7 @@ void run_se_vx_byte(struct chip8 *vm, uint16_t instruction) {
     uint8_t byte = LOW_BYTE(instruction);
 
     if (vm->reg_v[reg] == byte) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 
@@ -44,7 +44,7 @@ void run_se_vx_vy(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg2 = REG_2(instruction);
 
     if (vm->reg_v[reg1] == vm->reg_v[reg2]) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 
@@ -53,7 +53,7 @@ void run_sne_vx_byte(struct chip8 *vm, uint16_t instruction) {
     uint8_t byte = LOW_BYTE(instruction);
 
     if (vm->reg_v[reg] != byte) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 
@@ -80,7 +80,7 @@ void run_sne_vx_vy(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg2 = REG_2(instruction);
 
     if (vm->reg_v[reg1] != vm->reg_v[reg2]) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 
@@ -184,14 +184,14 @@ void run_drw_vx_vy_n(struct chip8 *vm, uint16_t instruction) {
 void run_skp_vx(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     if (is_key_down(vm->reg_v[reg])) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 
 void run_sknp_vx(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     if (!is_key_down(vm->reg_v[reg])) {
-        vm->pc += 4;
+        vm->pc += 2;
     }
 }
 

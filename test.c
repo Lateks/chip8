@@ -48,6 +48,15 @@ void test_call_addr(CuTest* tc) {
     CuAssertIntEquals(tc, 0x255, vm.stack[0]);
 }
 
+void test_call_addr_stack_overflow(CuTest* tc) {
+    struct chip8 vm = { .pc = 0x255, .sp = STACK_SIZE };
+
+    run_call_addr(&vm, 0x22d4);
+    CuAssertIntEquals(tc, 0x255, vm.pc);
+    CuAssertIntEquals(tc, STACK_SIZE, vm.sp);
+    CuAssertIntEquals(tc, ERROR_STACK_OVERFLOW, vm.error);
+}
+
 void test_se_vx_byte(CuTest* tc) {
     struct chip8 vm = { .pc = 0x220 };
     vm.reg_v[0] = 0x29;
@@ -57,13 +66,13 @@ void test_se_vx_byte(CuTest* tc) {
     CuAssertIntEquals(tc, 0x220, vm.pc);
 
     run_se_vx_byte(&vm, 0x3029);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 
     run_se_vx_byte(&vm, 0x3D42);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 
     run_se_vx_byte(&vm, 0x3D36);
-    CuAssertIntEquals(tc, 0x228, vm.pc);
+    CuAssertIntEquals(tc, 0x224, vm.pc);
 }
 
 void test_sne_vx_byte(CuTest* tc) {
@@ -75,13 +84,13 @@ void test_sne_vx_byte(CuTest* tc) {
     CuAssertIntEquals(tc, 0x220, vm.pc);
 
     run_sne_vx_byte(&vm, 0x4030);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 
     run_sne_vx_byte(&vm, 0x4D50);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 
     run_sne_vx_byte(&vm, 0x4D10);
-    CuAssertIntEquals(tc, 0x228, vm.pc);
+    CuAssertIntEquals(tc, 0x224, vm.pc);
 }
 
 void test_se_vx_vy(CuTest* tc) {
@@ -94,16 +103,7 @@ void test_se_vx_vy(CuTest* tc) {
     CuAssertIntEquals(tc, 0x220, vm.pc);
 
     run_se_vx_vy(&vm, 0x50A0);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
-}
-
-void test_call_addr_stack_overflow(CuTest* tc) {
-    struct chip8 vm = { .pc = 0x255, .sp = STACK_SIZE };
-
-    run_call_addr(&vm, 0x22d4);
-    CuAssertIntEquals(tc, 0x255, vm.pc);
-    CuAssertIntEquals(tc, STACK_SIZE, vm.sp);
-    CuAssertIntEquals(tc, ERROR_STACK_OVERFLOW, vm.error);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 }
 
 void test_ld_vx_byte(CuTest* tc) {
@@ -137,10 +137,10 @@ void test_sne_vx_vy(CuTest* tc) {
     vm.reg_v[0xA] = 0x29;
 
     run_sne_vx_vy(&vm, 0x9050);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 
     run_sne_vx_vy(&vm, 0x90A0);
-    CuAssertIntEquals(tc, 0x224, vm.pc);
+    CuAssertIntEquals(tc, 0x222, vm.pc);
 }
 
 void test_ld_i_addr(CuTest* tc) {

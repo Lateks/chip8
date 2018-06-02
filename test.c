@@ -348,6 +348,14 @@ void test_ld_dt_vx(CuTest* tc) {
     CuAssertIntEquals(tc, 50, vm.reg_dt);
 }
 
+void test_add_i_vx(CuTest* tc) {
+    struct chip8 vm = { .reg_i = 0x200 };
+    vm.reg_v[0xA] = 0x50;
+
+    run_add_i_vx(&vm, 0xFA1E);
+    CuAssertIntEquals(tc, 0x250, vm.reg_i);
+}
+
 void test_ld_f_vx(CuTest* tc) {
     struct chip8 vm;
 
@@ -457,6 +465,7 @@ CuSuite* get_instruction_test_suite(void)
     SUITE_ADD_TEST(suite, test_rnd_vx_byte);
     SUITE_ADD_TEST(suite, test_ld_vx_dt);
     SUITE_ADD_TEST(suite, test_ld_dt_vx);
+    SUITE_ADD_TEST(suite, test_add_i_vx);
     SUITE_ADD_TEST(suite, test_ld_f_vx);
     SUITE_ADD_TEST(suite, test_ld_b_vx);
     SUITE_ADD_TEST(suite, test_ld_i_vx);

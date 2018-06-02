@@ -208,6 +208,9 @@ void vm_run(struct chip8 *vm, float dt) {
                 case 0x15:
                     run_ld_dt_vx(vm, instruction);
                     break;
+                case 0x1E:
+                    run_add_i_vx(vm, instruction);
+                    break;
                 case 0x29:
                     run_ld_f_vx(vm, instruction);
                     break;

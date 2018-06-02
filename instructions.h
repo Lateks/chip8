@@ -64,4 +64,6 @@ void run_ld_f_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_b_vx(struct chip8 *vm, uint16_t instruction);
 
+void run_ld_vx_i(struct chip8 *vm, uint16_t instruction);
+
 #endif

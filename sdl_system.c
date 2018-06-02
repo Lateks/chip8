@@ -1,5 +1,6 @@
 #include "sdl_system.h"
 #include "machine.h"
+#include "screen.h"
 
 SDL_Scancode hex_key_map[] = {
     SDL_SCANCODE_N, // 0x0,
@@ -85,7 +86,7 @@ void draw_screen(struct io_state *state, const struct chip8 * const vm) {
 
     for (int y = 0; y < SCREEN_HEIGHT_PX; ++y) {
         for (int x = 0; x < SCREEN_WIDTH_PX; ++x) {
-            if (vm->screen[y * SCREEN_WIDTH_PX + x]) {
+            if (get_pixel(vm->screen, x, y)) {
                 SDL_Rect fillRect = {
                     x * SCALE_MULTIPLIER,
                     y * SCALE_MULTIPLIER,

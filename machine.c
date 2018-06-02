@@ -4,6 +4,7 @@
 #include <string.h>
 #include "machine.h"
 #include "instructions.h"
+#include "screen.h"
 
 uint8_t hex_sprites[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0x0
@@ -39,10 +40,9 @@ void init(struct chip8 *vm, size_t program_size) {
     vm->sp = 0;
     vm->error = 0;
     vm->prog_mem_end = PROG_MEM_START + program_size;
-    vm->draw_flag = true;
+    vm->screen = init_screen();
 
     memcpy(&vm->ram[HEX_SPRITE_START_ADDR], hex_sprites, 16 * HEX_SPRITE_LEN);
-    clear_screen(vm);
 }
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
@@ -59,27 +59,6 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
     init(vm, bytes_read);
 
     return bytes_read;
-}
-
-void clear_screen(struct chip8 *vm) {
-    memset(vm->screen, 0, SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX);
-}
-
-int wrap_coordinate(int c, int max) {
-    if (c < 0) return max + c;
-    if (c >= max) return c - max;
-    return c;
-}
-
-bool xor_pixel(struct chip8 *vm, int x, int y, uint8_t value) {
-    if (value) {
-        int coordinate = wrap_coordinate(y, SCREEN_HEIGHT_PX) * SCREEN_WIDTH_PX + wrap_coordinate(x, SCREEN_WIDTH_PX);
-        uint8_t old_value = vm->screen[coordinate];
-        vm->screen[coordinate] = old_value ^ value;
-        return old_value;
-    } else {
-        return false;
-    }
 }
 
 void run_8xyn(struct chip8 *vm, uint16_t instruction) {
@@ -151,6 +130,9 @@ void vm_run(struct chip8 *vm, float dt) {
     switch (instruction_type) {
         case 0:
             switch (instruction) {
+                case CLS:
+                    run_cls(vm);
+                    break;
                 case RET:
                     run_ret(vm);
                     break;
@@ -264,4 +246,17 @@ void vm_update_timers(struct chip8 *vm, float dt) {
         if (vm->reg_st > 0) --vm->reg_st;
         vm->sec_since_timer_update = 0;
     }
+}
+
+bool should_redraw(struct chip8 *vm) {
+    return vm->screen->changed;
+}
+
+void reset_redraw_flag(struct chip8 *vm) {
+    vm->screen->changed = false;
+}
+
+void cleanup(struct chip8 *vm) {
+    free(vm->screen);
+    vm->screen = NULL;
 }

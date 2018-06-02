@@ -2,11 +2,16 @@
 #include <stdlib.h>
 #include "instructions.h"
 #include "sdl_system.h"
+#include "screen.h"
 
 #define OP_VX_VY(op, vm, instruction) \
     uint8_t reg1 = REG_1(instruction); \
     uint8_t reg2 = REG_2(instruction); \
     vm->reg_v[reg1] = vm->reg_v[reg1] op vm->reg_v[reg2];
+
+void run_cls(struct chip8 *vm) {
+    clear_screen(vm->screen);
+}
 
 void run_ret(struct chip8 *vm) {
     if (vm->sp > 0) {
@@ -170,13 +175,12 @@ void run_drw_vx_vy_n(struct chip8 *vm, uint16_t instruction) {
         byte = vm->ram[start + i];
         for (j = 7; j >= 0; --j) {
             pixel = LSB(byte);
-            if (xor_pixel(vm, x_coord + j, y_coord + i, pixel)) {
+            if (xor_pixel(vm->screen, x_coord + j, y_coord + i, pixel)) {
                 vm->reg_v[0xF] = 1;
             }
             byte >>= 1;
         }
     }
-    vm->draw_flag = true;
 }
 
 void run_skp_vx(struct chip8 *vm, uint16_t instruction) {

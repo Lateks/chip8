@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include "machine.h"
 #include "sdl_system.h"
+#include "screen.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -28,9 +29,9 @@ int main(int argc, char *argv[]) {
 
         vm_run(&vm, dt);
         vm_update_timers(&vm, dt);
-        if (vm.draw_flag) {
+        if (should_redraw(&vm)) {
             draw_screen(&state, &vm);
-            vm.draw_flag = false;
+            reset_redraw_flag(&vm);
         }
 
         temp = clock();
@@ -38,5 +39,6 @@ int main(int argc, char *argv[]) {
         loop_start = temp;
     }
 
+    cleanup(&vm);
     close(&state);
 }

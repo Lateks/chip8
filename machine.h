@@ -8,8 +8,6 @@
 #define RAM_SIZE 0x1000
 #define PROG_MEM_START 0x200
 #define STACK_SIZE 16
-#define SCREEN_WIDTH_PX 64
-#define SCREEN_HEIGHT_PX 32
 #define HEX_SPRITE_LEN 5
 #define HEX_SPRITE_START_ADDR 0
 #define UPDATE_INTERVAL_SECONDS 1/240.f
@@ -33,10 +31,9 @@ struct chip8 {
     uint8_t reg_v[16];
     enum vm_error error;
     uint16_t prog_mem_end;
-    uint8_t screen[SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX];
-    bool draw_flag;
     float sec_since_update;
     float sec_since_timer_update;
+    struct screen *screen;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);
@@ -45,8 +42,10 @@ void vm_run(struct chip8 *vm, float dt);
 
 void vm_update_timers(struct chip8 *vm, float dt);
 
-void clear_screen(struct chip8 *vm);
+bool should_redraw(struct chip8 *vm);
 
-bool xor_pixel(struct chip8 *vm, int x, int y, uint8_t value);
+void reset_redraw_flag(struct chip8 *vm);
+
+void cleanup(struct chip8 *vm);
 
 #endif

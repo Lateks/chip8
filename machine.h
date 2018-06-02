@@ -7,6 +7,8 @@
 #define RAM_SIZE 0x1000
 #define PROG_MEM_START 0x200
 #define STACK_SIZE 16
+#define SCREEN_WIDTH_PX 64
+#define SCREEN_HEIGHT_PX 32
 
 enum vm_error {
     NO_ERROR,

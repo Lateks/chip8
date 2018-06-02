@@ -12,6 +12,8 @@
 #define SCREEN_HEIGHT_PX 32
 #define HEX_SPRITE_LEN 5
 #define HEX_SPRITE_START_ADDR 0
+#define UPDATE_INTERVAL_SECONDS 1/240.f
+#define TIMER_UPDATE_INTERVAL_SECONDS 1/60.f
 
 enum vm_error {
     NO_ERROR,
@@ -33,11 +35,15 @@ struct chip8 {
     uint16_t prog_mem_end;
     uint8_t screen[SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX];
     bool draw_flag;
+    float sec_since_update;
+    float sec_since_timer_update;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);
 
-void vm_run(struct chip8 *vm);
+void vm_run(struct chip8 *vm, float dt);
+
+void vm_update_timers(struct chip8 *vm, float dt);
 
 void clear_screen(struct chip8 *vm);
 

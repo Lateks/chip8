@@ -132,7 +132,12 @@ void print_error(struct chip8* vm, uint16_t old_pc) {
     }
 }
 
-void vm_run(struct chip8 *vm) {
+void vm_run(struct chip8 *vm, float dt) {
+    vm->sec_since_update += dt;
+    if (vm->sec_since_update < UPDATE_INTERVAL_SECONDS) {
+        return;
+    }
+
     uint16_t instruction = read_instruction(vm);
     uint16_t instruction_type = HIGH_NIBBLE(instruction);
     uint16_t old_pc = vm->pc;
@@ -245,6 +250,14 @@ void vm_run(struct chip8 *vm) {
         exit(vm->error);
     }
 
-    if (vm->reg_dt > 0) --vm->reg_dt;
-    if (vm->reg_st > 0) --vm->reg_st;
+    vm->sec_since_update = 0;
+}
+
+void vm_update_timers(struct chip8 *vm, float dt) {
+    vm->sec_since_timer_update += dt;
+    if (vm->sec_since_timer_update > TIMER_UPDATE_INTERVAL_SECONDS) {
+        if (vm->reg_dt > 0) --vm->reg_dt;
+        if (vm->reg_st > 0) --vm->reg_st;
+        vm->sec_since_timer_update = 0;
+    }
 }

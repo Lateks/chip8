@@ -68,6 +68,10 @@ void run_sknp_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_ld_vx_dt(struct chip8 *vm, uint16_t instruction);
 
+void run_ld_vx_k(struct chip8 *vm, uint16_t instruction);
+
+void run_ld_vx_k_receive_input(struct chip8 *vm, uint8_t input);
+
 void run_ld_dt_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_add_i_vx(struct chip8 *vm, uint16_t instruction);

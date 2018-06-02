@@ -34,6 +34,9 @@ struct chip8 {
     float sec_since_update;
     float sec_since_timer_update;
     struct screen *screen;
+
+    bool awaiting_input;
+    uint8_t input_register;
 };
 
 size_t vm_init_with_rom(struct chip8 *vm, const char *const filename);
@@ -47,5 +50,7 @@ bool should_redraw(struct chip8 *vm);
 void reset_redraw_flag(struct chip8 *vm);
 
 void cleanup(struct chip8 *vm);
+
+void vm_receive_input(struct chip8 *vm, int hex_key);
 
 #endif

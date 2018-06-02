@@ -2,7 +2,7 @@
 #include "machine.h"
 #include "screen.h"
 
-SDL_Scancode hex_key_map[] = {
+SDL_Scancode hex_key_scancode_map[] = {
     SDL_SCANCODE_N, // 0x0,
     SDL_SCANCODE_5, // 0x1
     SDL_SCANCODE_6, // 0x2
@@ -19,6 +19,25 @@ SDL_Scancode hex_key_map[] = {
     SDL_SCANCODE_I, // 0xD,
     SDL_SCANCODE_K, // 0xE,
     SDL_SCANCODE_COMMA // 0xF
+};
+
+SDL_Keycode hex_key_keycode_map[] = {
+    SDLK_n, // 0x0
+    SDLK_5, // 0x1
+    SDLK_6, // 0x2
+    SDLK_7, // 0x3
+    SDLK_t, // 0x4
+    SDLK_y, // 0x5
+    SDLK_u, // 0x6
+    SDLK_g, // 0x7
+    SDLK_h, // 0x8
+    SDLK_j, // 0x9
+    SDLK_b, // 0xA
+    SDLK_m, // 0xB
+    SDLK_8, // 0xC
+    SDLK_i, // 0xD
+    SDLK_k, // 0xE
+    SDLK_COMMA // 0xF
 };
 
 struct io_state init_io(int screen_width, int screen_height) {
@@ -50,11 +69,22 @@ struct io_state init_io(int screen_width, int screen_height) {
     return state;
 }
 
-void handle_events(struct io_state *state) {
+void handle_events(struct io_state *state, int *key_pressed) {
     SDL_Event e;
+    *key_pressed = -1;
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
             state->quit = true;
+        } else if (e.type == SDL_KEYDOWN) {
+            int hex_key;
+            for (hex_key = 0; hex_key < 16; ++hex_key) {
+                if (hex_key_keycode_map[hex_key]) {
+                    break;
+                }
+            }
+            if (hex_key < 16) {
+                *key_pressed = hex_key;
+            }
         }
     }
 }
@@ -76,7 +106,7 @@ bool is_key_down(uint8_t hex_key_code) {
         return false;
     }
     const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
-    const SDL_Scancode scancode = hex_key_map[hex_key_code];
+    const SDL_Scancode scancode = hex_key_scancode_map[hex_key_code];
     return keyboard_state[scancode];
 }
 

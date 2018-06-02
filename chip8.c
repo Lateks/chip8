@@ -19,14 +19,18 @@ int main(int argc, char *argv[]) {
     int loop_start = clock();
     int temp = 0;
     float dt = 1;
+    int keypress = -1;
 
     vm_init_with_rom(&vm, argv[1]);
     struct io_state state = init_io(SCREEN_WIDTH_PX, SCREEN_HEIGHT_PX);
     srand(time(NULL));
 
     while (!state.quit) {
-        handle_events(&state);
+        handle_events(&state, &keypress);
 
+        if (keypress > -1 && vm.awaiting_input) {
+            vm_receive_input(&vm, keypress);
+        }
         vm_run(&vm, dt);
         vm_update_timers(&vm, dt);
         if (should_redraw(&vm)) {

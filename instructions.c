@@ -157,3 +157,8 @@ void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction) {
 
     vm->reg_v[reg] = r & byte;
 }
+
+void run_ld_f_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    vm->reg_i = HEX_SPRITE_START_ADDR + vm->reg_v[reg] * HEX_SPRITE_LEN;
+}

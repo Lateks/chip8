@@ -58,4 +58,6 @@ void run_jp_v0_addr(struct chip8 *vm, uint16_t instruction);
 
 void run_rnd_vx_byte(struct chip8 *vm, uint16_t instruction);
 
+void run_ld_f_vx(struct chip8 *vm, uint16_t instruction);
+
 #endif

@@ -9,6 +9,8 @@
 #define STACK_SIZE 16
 #define SCREEN_WIDTH_PX 64
 #define SCREEN_HEIGHT_PX 32
+#define HEX_SPRITE_LEN 5
+#define HEX_SPRITE_START_ADDR 0
 
 enum vm_error {
     NO_ERROR,

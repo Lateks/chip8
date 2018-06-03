@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     }
 
     struct chip8 vm;
+    struct io_state state;
 
     int loop_start = clock();
     int temp = 0;
@@ -25,7 +26,7 @@ int main(int argc, char *argv[]) {
     float time_since_redraw = RENDER_INTERVAL_SECONDS;
 
     vm_init_with_rom(&vm, argv[1]);
-    struct io_state state = init_io(SCREEN_WIDTH_PX, SCREEN_HEIGHT_PX);
+    init_io(&state, SCREEN_WIDTH_PX, SCREEN_HEIGHT_PX);
     srand(time(NULL));
 
     while (!state.quit) {
@@ -34,8 +35,7 @@ int main(int argc, char *argv[]) {
         if (keypress > -1 && vm.awaiting_input) {
             vm_receive_input(&vm, keypress);
         }
-        vm_run(&vm, dt);
-        vm_update_timers(&vm, dt);
+        vm_run(&vm, dt, &state);
         if (should_redraw(&vm) && time_since_redraw >= RENDER_INTERVAL_SECONDS) {
             draw_screen(&state, &vm);
             reset_redraw_flag(&vm);

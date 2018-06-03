@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "shared.h"
 #include "machine.h"
 #include "instructions.h"
 #include "screen.h"
+#include "sdl_system.h"
 
 uint8_t hex_sprites[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0x0
@@ -116,7 +118,7 @@ void print_error(struct chip8* vm, uint16_t old_pc) {
     }
 }
 
-void vm_run(struct chip8 *vm, float dt) {
+void vm_run_instruction(struct chip8 *vm, float dt) {
     vm->sec_since_update += dt;
     if (vm->sec_since_update < UPDATE_INTERVAL_SECONDS || vm->awaiting_input) {
         return;
@@ -212,6 +214,9 @@ void vm_run(struct chip8 *vm, float dt) {
                 case 0x15:
                     run_ld_dt_vx(vm, instruction);
                     break;
+                case 0x18:
+                    run_ld_st_vx(vm, instruction);
+                    break;
                 case 0x1E:
                     run_add_i_vx(vm, instruction);
                     break;
@@ -250,11 +255,32 @@ void vm_run(struct chip8 *vm, float dt) {
 }
 
 void vm_update_timers(struct chip8 *vm, float dt) {
-    vm->sec_since_timer_update += dt;
-    if (vm->sec_since_timer_update > TIMER_UPDATE_INTERVAL_SECONDS || vm->awaiting_input) {
+    vm->sec_since_dt_update += dt;
+    vm->sec_since_st_update += dt;
+    if (vm->awaiting_input) return;
+
+    if (vm->sec_since_dt_update > TIMER_UPDATE_INTERVAL_SECONDS) {
         if (vm->reg_dt > 0) --vm->reg_dt;
+        vm->sec_since_dt_update = 0;
+    }
+    if (vm->sec_since_st_update > TIMER_UPDATE_INTERVAL_SECONDS) {
         if (vm->reg_st > 0) --vm->reg_st;
-        vm->sec_since_timer_update = 0;
+        vm->sec_since_st_update = 0;
+    }
+}
+
+void vm_run(struct chip8 *vm, float dt, struct io_state *io) {
+    uint8_t old_st = vm->reg_st;
+
+    vm_run_instruction(vm, dt);
+    vm_update_timers(vm, dt);
+
+    if (vm->reg_st != old_st) {
+        if (vm->reg_st > 0) {
+            play_sound(io);
+        } else {
+            stop_sound(io);
+        }
     }
 }
 
@@ -275,4 +301,8 @@ void vm_receive_input(struct chip8 *vm, int hex_key) {
     if ((hex_key >= 0 || hex_key < 16) && vm->awaiting_input) {
         run_ld_vx_k_receive_input(vm, hex_key);
     }
+}
+
+bool should_play_sound(struct chip8 *vm) {
+    return vm->reg_st > 0;
 }

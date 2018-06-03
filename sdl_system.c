@@ -1,6 +1,9 @@
+#include <math.h>
 #include "sdl_system.h"
 #include "machine.h"
 #include "screen.h"
+
+#define WAV_FILE "sound/316852__kwahmah-02__1khz-30-seconds.wav"
 
 SDL_Scancode hex_key_scancode_map[] = {
     SDL_SCANCODE_N, // 0x0,
@@ -40,33 +43,80 @@ SDL_Keycode hex_key_keycode_map[] = {
     SDLK_COMMA // 0xF
 };
 
-struct io_state init_io(int screen_width, int screen_height) {
-    struct io_state state = { .window = NULL, .quit = false };
+void audio_callback(void *userdata, Uint8 *stream, int len) {
+    struct audio_data *data = (struct audio_data *)userdata;
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Failed to initialize SDL. Error: %s\n", SDL_GetError());
-        state.quit = true;
+    Uint32 len_remaining = data->wav_len_bytes - data->audio_pos;
+    Uint32 copy_bytes = fmin(len, data->wav_len_bytes);
+    Uint32 start_pos = copy_bytes > len_remaining ? 0 : data->audio_pos;
+    Uint8 *buffer_start = data->wav_buffer + start_pos;
+
+    SDL_memset(stream, 0, copy_bytes);
+    memcpy(stream, buffer_start, copy_bytes);
+
+    data->audio_pos = start_pos + copy_bytes;
+}
+
+void init_window(struct io_state *state, int screen_width, int screen_height) {
+    state->window = SDL_CreateWindow(
+            "CHIP-8",
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            screen_width * SCALE_MULTIPLIER,
+            screen_height * SCALE_MULTIPLIER,
+            SDL_WINDOW_SHOWN);
+    if (state->window == NULL) {
+        printf("Failed to create SDL Window. Error: %s\n", SDL_GetError());
+        state->quit = true;
     } else {
-        state.window = SDL_CreateWindow(
-                "CHIP-8",
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                screen_width * SCALE_MULTIPLIER,
-                screen_height * SCALE_MULTIPLIER,
-                SDL_WINDOW_SHOWN);
-        if (state.window == NULL) {
-            printf("Failed to create SDL Window. Error: %s\n", SDL_GetError());
-            state.quit = true;
-        } else {
-            state.renderer = SDL_CreateRenderer(state.window, -1, SDL_RENDERER_ACCELERATED);
-            if (state.renderer == NULL) {
-                printf("Failed to create SDL Renderer. Error: %s\n", SDL_GetError());
-                state.quit = true;
-            }
+        state->renderer = SDL_CreateRenderer(state->window, -1, SDL_RENDERER_ACCELERATED);
+        if (state->renderer == NULL) {
+            printf("Failed to create SDL Renderer. Error: %s\n", SDL_GetError());
+            state->quit = true;
         }
     }
+}
 
-    return state;
+void init_sound(struct io_state *state) {
+    Uint32 wav_length;
+    Uint8 *wav_buffer;
+    SDL_AudioSpec audio_spec;
+
+    if (SDL_LoadWAV(WAV_FILE, &audio_spec, &wav_buffer, &wav_length) == NULL) {
+        printf("Failed to load WAW file. Error: %s\n", SDL_GetError());
+        state->audio_data.loaded = false;
+        state->quit = true;
+    } else {
+        state->playing_sound = false;
+
+        SDL_zero(audio_spec);
+        audio_spec.callback = audio_callback;
+        audio_spec.userdata = &state->audio_data;
+        audio_spec.samples = 32;
+
+        state->audio_data.loaded = true;
+        state->audio_data.wav_buffer = wav_buffer;
+        state->audio_data.audio_pos = 0;
+        state->audio_data.wav_len_bytes = wav_length;
+
+        if (SDL_OpenAudio(&audio_spec, NULL) < 0){
+            printf("Couldn't open sound device: %s\n", SDL_GetError());
+            state->quit = true;
+        }
+    }
+}
+
+void init_io(struct io_state *state, int screen_width, int screen_height) {
+    state->window = NULL;
+    state->quit = false;
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+        printf("Failed to initialize SDL. Error: %s\n", SDL_GetError());
+        state->quit = true;
+    } else {
+        init_window(state, screen_width, screen_height);
+        init_sound(state);
+    }
 }
 
 void handle_events(struct io_state *state, int *key_pressed) {
@@ -98,6 +148,11 @@ void close(struct io_state *state) {
         SDL_DestroyRenderer(state->renderer);
         state->renderer = NULL;
     }
+    if (state->audio_data.loaded) {
+        SDL_CloseAudio();
+        SDL_FreeWAV(state->audio_data.wav_buffer);
+    }
+
     SDL_Quit();
 }
 
@@ -130,4 +185,19 @@ void draw_screen(struct io_state *state, const struct chip8 * const vm) {
     }
 
     SDL_RenderPresent(state->renderer);
+}
+
+void play_sound(struct io_state *state) {
+    if (!state->playing_sound && state->audio_data.loaded) {
+        state->playing_sound = true;
+        SDL_PauseAudio(0);
+    }
+}
+
+void stop_sound(struct io_state *state) {
+    if (state->playing_sound && state->audio_data.loaded) {
+        state->playing_sound = false;
+        SDL_PauseAudio(1);
+        state->audio_data.audio_pos = 0;
+    }
 }

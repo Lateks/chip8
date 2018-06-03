@@ -216,6 +216,13 @@ void run_ld_vx_k_receive_input(struct chip8 *vm, uint8_t input) {
 void run_ld_dt_vx(struct chip8 *vm, uint16_t instruction) {
     uint8_t reg = REG_1(instruction);
     vm->reg_dt = vm->reg_v[reg];
+    vm->sec_since_dt_update = 0;
+}
+
+void run_ld_st_vx(struct chip8 *vm, uint16_t instruction) {
+    uint8_t reg = REG_1(instruction);
+    vm->reg_st = vm->reg_v[reg];
+    vm->sec_since_st_update = 0;
 }
 
 void run_add_i_vx(struct chip8 *vm, uint16_t instruction) {

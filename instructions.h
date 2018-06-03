@@ -2,7 +2,7 @@
 #define INSTRUCTIONS_H
 
 #include <stdint.h>
-#include "machine.h"
+#include "shared.h"
 
 #define LOW_BYTE(instr) (instr & 0x00FF)
 #define MEM_ADDR(instr) (instr & 0x0FFF)
@@ -73,6 +73,8 @@ void run_ld_vx_k(struct chip8 *vm, uint16_t instruction);
 void run_ld_vx_k_receive_input(struct chip8 *vm, uint8_t input);
 
 void run_ld_dt_vx(struct chip8 *vm, uint16_t instruction);
+
+void run_ld_st_vx(struct chip8 *vm, uint16_t instruction);
 
 void run_add_i_vx(struct chip8 *vm, uint16_t instruction);
 

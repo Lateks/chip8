@@ -4,31 +4,35 @@
 #include "instructions.h"
 #include "machine.h"
 
-#define print(c, name) printf("%04x: %s\n", c, name)
+#define print_unknown() puts("unknown instruction or byte of data");
 
 void print_mem_instr(char *name, uint16_t instr) {
-    printf("%x: %s %x\n", instr, name, MEM_ADDR(instr));
+    printf("%s %x\n", name, MEM_ADDR(instr));
+}
+
+void print_mem_reg_instr(char *name, char *reg_name, uint16_t instr) {
+    printf("%s %s, %x\n", name, reg_name, MEM_ADDR(instr));
 }
 
 void print_single_reg_instr(char *name, uint16_t instr) {
-    printf("%x: %s V%x\n", instr, name, REG_1(instr));
+    printf("%s V%x\n", name, REG_1(instr));
 }
 
 void print_single_reg_instr_with_operand(char *name, uint16_t instr) {
     uint16_t reg = REG_1(instr);
     uint16_t operand = LOW_BYTE(instr);
-    printf("%x: %s V%x, %x\n", instr, name, reg, operand);
+    printf("%s V%x, %x\n", name, reg, operand);
 }
 
 void print_two_reg_instr(char *name, uint16_t instr) {
-    printf("%x: %s V%x, V%x\n", instr, name, REG_1(instr), REG_2(instr));
+    printf("%s V%x, V%x\n", name, REG_1(instr), REG_2(instr));
 }
 
 void print_two_reg_instr_with_operand(char *name, uint16_t instr) {
     uint16_t reg1 = REG_1(instr);
     uint16_t reg2 = REG_2(instr);
     uint16_t op = LOW_NIBBLE(instr);
-    printf("%x: %s V%x, V%x, %x\n", instr, name, reg1, reg2, op);
+    printf("%s V%x, V%x, %x\n", name, reg1, reg2, op);
 }
 
 void print_two_reg_op(uint16_t instr) {
@@ -43,48 +47,48 @@ void print_f_instr(uint16_t instr) {
     uint16_t reg = REG_1(instr);
     switch (LOW_BYTE(instr)) {
         case 7:
-            printf("%x: LD V%x, DT\n", instr, reg);
+            printf("LD V%x, DT\n", reg);
             break;
         case 0xA:
-            printf("%x: LD V%x, K\n", instr, reg);
+            printf("LD V%x, K\n", reg);
             break;
         case 0x15:
-            printf("%x: LD V%x, DT\n", instr, reg);
+            printf("LD V%x, DT\n", reg);
             break;
         case 0x18:
-            printf("%x: LD ST, V%x\n", instr, reg);
+            printf("LD ST, V%x\n", reg);
             break;
         case 0x1E:
-            printf("%x: ADD I, V%x\n", instr, reg);
+            printf("ADD I, V%x\n", reg);
             break;
         case 0x29:
-            printf("%x: LD F, V%x\n", instr, reg);
+            printf("LD F, V%x\n", reg);
             break;
         case 0x33:
-            printf("%x: LD B, V%x\n", instr, reg);
+            printf("LD B, V%x\n", reg);
             break;
         case 0x55:
-            printf("%x: LD [I], V%x\n", instr, reg);
+            printf("LD [I], V%x\n", reg);
             break;
         case 0x65:
-            printf("%x: LD V%x, [I]\n", instr, reg);
+            printf("LD V%x, [I]\n", reg);
             break;
         default:
-            print(instr, "unknown");
+            print_unknown();
             break;
     }
 }
 
 void print_instruction(uint16_t instr, uint16_t addr) {
     uint16_t instruction_type = HIGH_NIBBLE(instr);
-    printf("(%04x) ", addr);
+    printf("(%04x) %04x: ", addr, instr);
 
     switch (instruction_type) {
         case 0:
             if (instr == CLS) {
-                print(CLS, "CLS");
+                puts("CLS");
             } else if (instr == RET) {
-                print(RET, "RET");
+                puts("RET");
             } else {
                 print_mem_instr("SYS", instr);
             }
@@ -117,10 +121,10 @@ void print_instruction(uint16_t instr, uint16_t addr) {
             print_two_reg_instr("SNE", instr);
             break;
         case 0xA:
-            print_mem_instr("LD I", instr);
+            print_mem_reg_instr("LD", "I", instr);
             break;
         case 0xB:
-            print_mem_instr("JP V0", instr);
+            print_mem_reg_instr("JP", "V0", instr);
             break;
         case 0xC:
             print_single_reg_instr_with_operand("RND", instr);
@@ -137,7 +141,7 @@ void print_instruction(uint16_t instr, uint16_t addr) {
                     print_single_reg_instr("SKNP", instr);
                     break;
                 default:
-                    print(instr, "unknown");
+                    print_unknown();
                     break;
             }
             break;
@@ -145,7 +149,7 @@ void print_instruction(uint16_t instr, uint16_t addr) {
             print_f_instr(instr);
             break;
         default:
-            print(instr, "unknown");
+            print_unknown();
     }
 }
 

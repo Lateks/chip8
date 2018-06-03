@@ -11,3 +11,9 @@ CFLAGS=-std=gnu18 -Wall -Wextra $(INCLUDES) -L/usr/local/lib -lSDL2
 chip8: $(OBJECTS)
 
 test: $(OBJECTS) lib/CuTest/CuTest.o
+
+clean:
+	rm -f ${OBJECTS} chip8
+
+clean-test:
+	rm -f ${OBJECTS} test

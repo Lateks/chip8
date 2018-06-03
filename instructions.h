@@ -16,6 +16,8 @@
 #define CLS 0x00E0
 #define RET 0x00EE
 
+void run_instruction(struct chip8 *vm, uint16_t instruction);
+
 void run_cls(struct chip8 *vm);
 
 void run_ret(struct chip8 *vm);

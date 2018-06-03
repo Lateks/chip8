@@ -64,42 +64,6 @@ size_t vm_init_with_rom(struct chip8 *vm, const char *const filename) {
     return bytes_read;
 }
 
-void run_8xyn(struct chip8 *vm, uint16_t instruction) {
-    uint8_t optype = LOW_NIBBLE(instruction);
-
-    switch (optype) {
-        case 0:
-            run_ld_vx_vy(vm, instruction);
-            break;
-        case 1:
-            run_or_vx_vy(vm, instruction);
-            break;
-        case 2:
-            run_and_vx_vy(vm, instruction);
-            break;
-        case 3:
-            run_xor_vx_vy(vm, instruction);
-            break;
-        case 4:
-            run_add_vx_vy(vm, instruction);
-            break;
-        case 5:
-            run_sub_vx_vy(vm, instruction);
-            break;
-        case 6:
-            run_shr_vx(vm, instruction);
-            break;
-        case 7:
-            run_subn_vx_vy(vm, instruction);
-            break;
-        case 0xE:
-            run_shl_vx(vm, instruction);
-            break;
-        default:
-            printf("Skipping unknown 8xyn instruction %x\n", instruction);
-    }
-}
-
 void print_error(struct chip8* vm, uint16_t old_pc) {
     switch (vm->error) {
         case NO_ERROR:
@@ -125,122 +89,11 @@ void vm_run_instruction(struct chip8 *vm, float dt) {
     }
 
     uint16_t instruction = read_instruction(vm);
-    uint16_t instruction_type = HIGH_NIBBLE(instruction);
     uint16_t old_pc = vm->pc;
 
     vm->pc += 2;
 
-    switch (instruction_type) {
-        case 0:
-            switch (instruction) {
-                case CLS:
-                    run_cls(vm);
-                    break;
-                case RET:
-                    run_ret(vm);
-                    break;
-                default:
-                    printf("Skipping unknown 0nnn instruction %x\n", instruction);
-            }
-            break;
-        case 1:
-            run_jp_addr(vm, instruction);
-            break;
-        case 2:
-            run_call_addr(vm, instruction);
-            break;
-        case 3:
-            run_se_vx_byte(vm, instruction);
-            break;
-        case 4:
-            run_sne_vx_byte(vm, instruction);
-            break;
-        case 5:
-            if (LOW_NIBBLE(instruction) == 0) {
-                run_se_vx_vy(vm, instruction);
-            } else {
-                printf("Skipping unknown 5nnn instruction %x\n", instruction);
-            }
-            break;
-        case 6:
-            run_ld_vx_byte(vm, instruction);
-            break;
-        case 7:
-            run_add_vx_byte(vm, instruction);
-            break;
-        case 8:
-            run_8xyn(vm, instruction);
-            break;
-        case 9:
-            if (LOW_NIBBLE(instruction) == 0) {
-                run_sne_vx_vy(vm, instruction);
-            } else {
-                printf("Skipping unknown 9nnn instruction %x\n", instruction);
-            }
-            break;
-        case 0xA:
-            run_ld_i_addr(vm, instruction);
-            break;
-        case 0xB:
-            run_jp_v0_addr(vm, instruction);
-            break;
-        case 0xC:
-            run_rnd_vx_byte(vm, instruction);
-            break;
-        case 0xD:
-            run_drw_vx_vy_n(vm, instruction);
-            break;
-        case 0xE:
-            switch (LOW_BYTE(instruction)) {
-                case 0x9E:
-                    run_skp_vx(vm, instruction);
-                    break;
-                case 0xA1:
-                    run_sknp_vx(vm, instruction);
-                    break;
-                default:
-                    printf("Skipping unknown 0xEnnn instruction %x\n", instruction);
-                    break;
-            }
-            break;
-        case 0xF:
-            switch (LOW_BYTE(instruction)) {
-                case 0x7:
-                    run_ld_vx_dt(vm, instruction);
-                    break;
-                case 0xA:
-                    run_ld_vx_k(vm, instruction);
-                    break;
-                case 0x15:
-                    run_ld_dt_vx(vm, instruction);
-                    break;
-                case 0x18:
-                    run_ld_st_vx(vm, instruction);
-                    break;
-                case 0x1E:
-                    run_add_i_vx(vm, instruction);
-                    break;
-                case 0x29:
-                    run_ld_f_vx(vm, instruction);
-                    break;
-                case 0x33:
-                    run_ld_b_vx(vm, instruction);
-                    break;
-                case 0x55:
-                    run_ld_i_vx(vm, instruction);
-                    break;
-                case 0x65:
-                    run_ld_vx_i(vm, instruction);
-                    break;
-                default:
-                    printf("Skipping unknown 0xFnnn instruction %x\n", instruction);
-                    break;
-            }
-            break;
-        default:
-            printf("Skipping unknown instruction %x\n", instruction);
-    }
-
+    run_instruction(vm, instruction);
 
     if (vm->pc < PROG_MEM_START || vm->pc >= vm->prog_mem_end) {
         vm->error = ERROR_OUT_OF_BOUNDS_MEMORY_ACCESS;

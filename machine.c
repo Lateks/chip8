@@ -43,7 +43,7 @@ void init(struct chip8 *vm, size_t program_size) {
     vm->error = 0;
     vm->awaiting_input = false;
     vm->prog_mem_end = PROG_MEM_START + program_size;
-    vm->screen = init_screen();
+    clear_screen(&vm->screen);
 
     memcpy(&vm->ram[HEX_SPRITE_START_ADDR], hex_sprites, 16 * HEX_SPRITE_LEN);
 }
@@ -285,16 +285,11 @@ void vm_run(struct chip8 *vm, float dt, struct io_state *io) {
 }
 
 bool should_redraw(struct chip8 *vm) {
-    return vm->screen->changed;
+    return vm->screen.changed;
 }
 
 void reset_redraw_flag(struct chip8 *vm) {
-    vm->screen->changed = false;
-}
-
-void cleanup(struct chip8 *vm) {
-    free(vm->screen);
-    vm->screen = NULL;
+    vm->screen.changed = false;
 }
 
 void vm_receive_input(struct chip8 *vm, int hex_key) {

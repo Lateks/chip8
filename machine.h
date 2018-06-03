@@ -14,8 +14,6 @@ bool should_redraw(struct chip8 *vm);
 
 void reset_redraw_flag(struct chip8 *vm);
 
-void cleanup(struct chip8 *vm);
-
 void vm_receive_input(struct chip8 *vm, int hex_key);
 
 bool should_play_sound(struct chip8 *vm);

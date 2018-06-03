@@ -2,6 +2,7 @@
 #define SHARED_H
 
 #include <SDL.h>
+#include "screen.h"
 
 #define RAM_SIZE 0x1000
 #define PROG_MEM_START 0x200
@@ -47,7 +48,7 @@ struct chip8 {
     float sec_since_update;
     float sec_since_dt_update;
     float sec_since_st_update;
-    struct screen *screen;
+    struct screen screen;
 
     bool awaiting_input;
     uint8_t input_register;

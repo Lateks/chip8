@@ -2,12 +2,6 @@
 #include "screen.h"
 #include "machine.h"
 
-struct screen *init_screen() {
-    struct screen *screen = malloc(sizeof(struct screen));
-    clear_screen(screen);
-    return screen;
-}
-
 void clear_screen(struct screen *screen) {
     memset(screen->screen, 0, SCREEN_WIDTH_PX * SCREEN_HEIGHT_PX);
     screen->changed = true;
@@ -35,7 +29,7 @@ bool xor_pixel(struct screen *screen, int x, int y, uint8_t value) {
     }
 }
 
-bool get_pixel(struct screen *screen, int x, int y) {
+bool get_pixel(const struct screen * const screen, int x, int y) {
     int coordinate = get_coordinate(x, y);
     return screen->screen[coordinate];
 }

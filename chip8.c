@@ -48,6 +48,5 @@ int main(int argc, char *argv[]) {
         loop_start = temp;
     }
 
-    cleanup(&vm);
     close(&state);
 }

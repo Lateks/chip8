@@ -12,12 +12,10 @@ struct screen {
     bool changed;
 };
 
-struct screen *init_screen();
-
 void clear_screen(struct screen *screen);
 
 bool xor_pixel(struct screen *screen, int x, int y, uint8_t value);
 
-bool get_pixel(struct screen *screen, int x, int y);
+bool get_pixel(const struct screen * const screen, int x, int y);
 
 #endif

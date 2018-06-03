@@ -269,6 +269,15 @@ void vm_update_timers(struct chip8 *vm, float dt) {
     }
 }
 
+void vm_render(struct chip8 *vm, float dt, struct io_state *io) {
+    vm->sec_since_render += dt;
+    if (vm->screen.changed && vm->sec_since_render >= RENDER_INTERVAL_SECONDS) {
+        draw_screen(io, vm);
+        vm->screen.changed = false;
+        vm->sec_since_render = 0;
+    }
+}
+
 void vm_run(struct chip8 *vm, float dt, struct io_state *io) {
     uint8_t old_st = vm->reg_st;
 
@@ -282,14 +291,8 @@ void vm_run(struct chip8 *vm, float dt, struct io_state *io) {
             stop_sound(io);
         }
     }
-}
 
-bool should_redraw(struct chip8 *vm) {
-    return vm->screen.changed;
-}
-
-void reset_redraw_flag(struct chip8 *vm) {
-    vm->screen.changed = false;
+    vm_render(vm, dt, io);
 }
 
 void vm_receive_input(struct chip8 *vm, int hex_key) {

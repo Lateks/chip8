@@ -11,6 +11,7 @@
 #define HEX_SPRITE_START_ADDR 0
 #define UPDATE_INTERVAL_SECONDS 1/240.f
 #define TIMER_UPDATE_INTERVAL_SECONDS 1/60.f
+#define RENDER_INTERVAL_SECONDS 1/60.f
 
 struct audio_data {
     bool loaded;
@@ -48,6 +49,7 @@ struct chip8 {
     float sec_since_update;
     float sec_since_dt_update;
     float sec_since_st_update;
+    float sec_since_render;
     struct screen screen;
 
     bool awaiting_input;

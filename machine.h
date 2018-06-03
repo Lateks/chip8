@@ -12,6 +12,4 @@ void vm_run(struct chip8 *vm, float dt, struct io_state *io);
 
 void vm_receive_input(struct chip8 *vm, int hex_key);
 
-bool should_play_sound(struct chip8 *vm);
-
 #endif

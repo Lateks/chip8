@@ -153,7 +153,3 @@ void vm_receive_input(struct chip8 *vm, int hex_key) {
         run_ld_vx_k_receive_input(vm, hex_key);
     }
 }
-
-bool should_play_sound(struct chip8 *vm) {
-    return vm->reg_st > 0;
-}

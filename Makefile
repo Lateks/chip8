@@ -5,8 +5,10 @@ INCLUDES = -I$(CUTEST_DIR) -I${SDL2_INCLUDE_DIR}
 
 OBJECTS = machine.o instructions.o sdl_system.o screen.o
 
+WARNING_FLAGS = -Wall -Wextra -Werror=format-security -Werror=implicit-function-declaration
+
 CC=gcc
-CFLAGS=-std=gnu18 -Wall -Wextra $(INCLUDES) -L/usr/local/lib -lSDL2
+CFLAGS=$(WARNING_FLAGS) $(INCLUDES) -L/usr/local/lib -lSDL2
 
 chip8: $(OBJECTS)
 

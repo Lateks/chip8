@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
     struct chip8 vm;
     struct io_state state;
 
-    int loop_start = clock();
-    int temp = 0;
+    clock_t loop_start = clock();
+    clock_t temp = 0;
     float dt = 1;
     int keypress = -1;
 

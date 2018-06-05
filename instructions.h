@@ -2,7 +2,6 @@
 #define INSTRUCTIONS_H
 
 #include <stdint.h>
-#include "shared.h"
 
 #define LOW_BYTE(instr) (instr & 0x00FF)
 #define MEM_ADDR(instr) (instr & 0x0FFF)
@@ -15,6 +14,8 @@
 
 #define CLS 0x00E0
 #define RET 0x00EE
+
+struct chip8;
 
 void run_instruction(struct chip8 *vm, uint16_t instruction);
 

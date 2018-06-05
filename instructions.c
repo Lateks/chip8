@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include "machine.h"
 #include "instructions.h"
 #include "sdl_system.h"
 #include "screen.h"

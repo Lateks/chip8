@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "shared.h"
 #include "machine.h"
 #include "instructions.h"
 #include "screen.h"
 #include "sdl_system.h"
+
+#define UPDATE_INTERVAL_SECONDS 1/240.f
+#define TIMER_UPDATE_INTERVAL_SECONDS 1/60.f
+#define RENDER_INTERVAL_SECONDS 1/60.f
 
 uint8_t hex_sprites[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0x0
@@ -125,7 +128,7 @@ void vm_update_timers(struct chip8 *vm, float dt) {
 void vm_render(struct chip8 *vm, float dt, struct io_state *io) {
     vm->sec_since_render += dt;
     if (vm->screen.changed && vm->sec_since_render >= RENDER_INTERVAL_SECONDS) {
-        draw_screen(io, vm);
+        draw_screen(io, &vm->screen);
         vm->screen.changed = false;
         vm->sec_since_render = 0;
     }

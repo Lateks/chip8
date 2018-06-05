@@ -1,6 +1,5 @@
 #include <math.h>
 #include "sdl_system.h"
-#include "machine.h"
 #include "screen.h"
 
 #define WAV_FILE "sound/316852__kwahmah-02__1khz-30-seconds.wav"
@@ -58,6 +57,8 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 }
 
 void init_window(struct io_state *state, int screen_width, int screen_height) {
+    state->screen_width = screen_width;
+    state->screen_height = screen_height;
     state->window = SDL_CreateWindow(
             "CHIP-8",
             SDL_WINDOWPOS_UNDEFINED,
@@ -165,13 +166,13 @@ bool is_key_down(uint8_t hex_key_code) {
     return keyboard_state[scancode];
 }
 
-void draw_screen(struct io_state *state, const struct chip8 * const vm) {
+void draw_screen(struct io_state *state, const struct screen * const screen) {
     SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 0);
     SDL_RenderClear(state->renderer);
 
-    for (int y = 0; y < SCREEN_HEIGHT_PX; ++y) {
-        for (int x = 0; x < SCREEN_WIDTH_PX; ++x) {
-            if (get_pixel(&vm->screen, x, y)) {
+    for (int y = 0; y < state->screen_height; ++y) {
+        for (int x = 0; x < state->screen_width; ++x) {
+            if (get_pixel(screen, x, y)) {
                 SDL_Rect fillRect = {
                     x * SCALE_MULTIPLIER,
                     y * SCALE_MULTIPLIER,

@@ -7,9 +7,9 @@
 #include "screen.h"
 #include "sdl_system.h"
 
-#define UPDATE_INTERVAL_SECONDS 1/240.f
-#define TIMER_UPDATE_INTERVAL_SECONDS 1/60.f
-#define RENDER_INTERVAL_SECONDS 1/60.f
+#define UPDATE_INTERVAL_SECONDS (1/120.f)
+#define TIMER_UPDATE_INTERVAL_SECONDS (1/120.f)
+#define RENDER_INTERVAL_SECONDS (1/60.f)
 
 uint8_t hex_sprites[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0x0

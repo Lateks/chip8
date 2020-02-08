@@ -93,7 +93,7 @@ void init_sound(struct io_state *state) {
         SDL_zero(audio_spec);
         audio_spec.callback = audio_callback;
         audio_spec.userdata = &state->audio_data;
-        audio_spec.samples = 32;
+        audio_spec.samples = 128;
 
         state->audio_data.loaded = true;
         state->audio_data.wav_buffer = wav_buffer;

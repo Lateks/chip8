@@ -39,5 +39,5 @@ int main(int argc, char *argv[]) {
         loop_start = temp;
     }
 
-    close(&state);
+    quit_io(&state);
 }

@@ -31,7 +31,7 @@ void handle_events(struct io_state *state, int *key_pressed);
 
 bool is_key_down(uint8_t hex_key_code);
 
-void close(struct io_state *state);
+void quit_io(struct io_state *state);
 
 void draw_screen(struct io_state *state, const struct screen * const screen);
 

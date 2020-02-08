@@ -140,7 +140,7 @@ void handle_events(struct io_state *state, int *key_pressed) {
     }
 }
 
-void close(struct io_state *state) {
+void quit_io(struct io_state *state) {
     if (state->window) {
         SDL_DestroyWindow(state->window);
         state->window = NULL;
